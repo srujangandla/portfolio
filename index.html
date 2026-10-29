@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Srujan | AI &amp; Data Science</title>
+
+  <!-- SEO & Social Meta Tags -->
+  <meta name="description"
+    content="Portfolio of Srujan - B.E. AI &amp; Data Science undergraduate at CBIT, Hyderabad. Aspiring ML Engineer, AI Engineer, Data Scientist, and Data Analyst.">
+  <meta name="keywords"
+    content="Srujan, AI Engineer, ML Engineer, Data Scientist, Data Analyst, CBIT Hyderabad, Machine Learning, Deep Learning, Python">
+  <meta name="author" content="Srujan">
+
+  <link rel="stylesheet" href="https://jsdelivr.net">
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://srujangandla.github.io/">
+  <meta property="og:title" content="Srujan | AI &amp; Data Science">
+  <meta property="og:description"
+    content="Portfolio of Srujan - B.E. AI &amp; Data Science undergraduate at CBIT, Hyderabad. Targeting ML Engineer, AI Engineer, Data Scientist, and Data Analyst roles.">
+  <meta property="og:image" content="assets/og-image.png">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Srujan | AI &amp; Data Science">
+  <meta name="twitter:description"
+    content="Portfolio of Srujan - B.E. AI &amp; Data Science undergraduate at CBIT, Hyderabad. Targeting ML Engineer, AI Engineer, Data Scientist, and Data Analyst roles.">
+  <meta name="twitter:image" content="assets/og-image.png">
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#0A0A0B">
+
+  <!-- Google Fonts: Inter (400, 600, 800) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Favicon (Inline SVG Minimalist Monogram) -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230A0A0B'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23FFFFFF' font-family='sans-serif' font-weight='800' font-size='16'>S</text></svg>">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- Space Theme Background Layers (Monochrome: Black, Grey, White — Back-to-Front) -->
+  <!-- Layer 2: Nebula (3-4 large blurred radial blobs with slow transform-only drift) -->
+  <div class="space-nebula" id="spaceNebula" aria-hidden="true">
+    <div class="nebula-blob nebula-1"></div>
+    <div class="nebula-blob nebula-2"></div>
+    <div class="nebula-blob nebula-3"></div>
+    <div class="nebula-blob nebula-4"></div>
+  </div>
+
+  <!-- Layer 3: Milky-Way Diagonal Band (35vh, rotated -20deg, soft radial fade) -->
+  <div class="space-milkyway-container" id="spaceMilkyway" aria-hidden="true">
+    <div class="space-milkyway-band"></div>
+  </div>
+
+  <!-- Layer 4: Moving White-Dot Starfield Background Canvas -->
+  <canvas id="starfield" aria-hidden="true"></canvas>
+
+  <!-- Layer 5: Planet Horizon Curve (Large, dark, partly cropped planet curve behind footer) -->
+  <div class="space-planet-layer" aria-hidden="true">
+    <div class="space-planet-horizon"></div>
+  </div>
+
+  <!-- Layer 6: Film-Grain Noise Texture Overlay (SVG feTurbulence) -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <!-- Layer 7: Vignette Overlay (Soft dark radial gradient for readability & contrast > 4.5:1) -->
+  <div class="space-vignette" aria-hidden="true"></div>
+
+  <!-- Faint Dot-Grid Background Overlay -->
+  <div class="grid-overlay" aria-hidden="true"></div>
+
+  <!-- Thin Scroll Progress Bar -->
+  <div class="scroll-progress-bar" id="scrollProgressBar" aria-hidden="true"></div>
+
+  <!-- Accessible Skip Link -->
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <!-- Sticky Glass Navbar -->
+  <header class="site-header" id="navbar">
+    <div class="nav-container">
+      <a href="#hero" class="brand-logo" aria-label="Srujan - Home">
+        <span class="logo-mark">~</span>
+        <span class="logo-text">Srujan Gandla</span>
+      </a>
+
+      <!-- Mobile Hamburger Toggle -->
+      <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu"
+        aria-label="Toggle navigation menu">
+        <svg class="icon-hamburger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <!-- Navigation Links -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links" id="navMenu">
+          <li><a href="#projects" class="nav-link">Projects</a></li>
+          <li><a href="#skills" class="nav-link">Skills</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main">
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+      <div class="hero-layout">
+        <div class="hero-content">
+
+          <!-- 1. Education & Role Kickers (Entrance Stagger 1) -->
+          <div class="hero-kickers hero-stagger-1">
+            <span class="hero-badge">
+              <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+              </svg>
+              B.E. AI &amp; Data Science, CBIT, Hyderabad
+            </span>
+            <span class="status-pill">
+              <span class="status-pulse" aria-hidden="true"></span>
+              Open to Internships &amp; Campus Placement
+            </span>
+          </div>
+
+          <!-- 2. Main Heading (Entrance Stagger 2) -->
+          <h1 class="hero-title hero-stagger-2">
+            I build AI systems that turn raw data into decisions.
+          </h1>
+
+          <!-- 3. Subtitle (Entrance Stagger 3) -->
+          <p class="hero-subtitle hero-stagger-3">
+            I build with Python, SQL and deep learning, and judge my models on data they've never seen. I'd rather ship
+            a simple model I can explain than a complex one I can't.
+          </p>
+
+          <!-- 4. Action Buttons (Entrance Stagger 4) -->
+          <div class="hero-actions hero-stagger-4">
+            <a href="#projects" class="btn btn-primary btn-view-projects" id="heroViewProjects">
+              <span>View projects</span>
+              <svg class="btn-icon btn-arrow-down" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <polyline points="19 12 12 19 5 12"></polyline>
+              </svg>
+            </a>
+
+            <a href="assets/resume.pdf" class="btn btn-glass" id="heroDownloadResume" download="Srujan_Resume.pdf"
+              target="_blank" rel="noopener noreferrer">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download resume</span>
+            </a>
+
+            <a href="https://github.com/srujangandla" class="btn btn-glass" id="heroGithubLink" target="_blank"
+              rel="noopener noreferrer" aria-label="GitHub Profile (opens in new tab)">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+                </path>
+              </svg>
+              <span>GitHub</span>
+            </a>
+          </div>
+
+          <!-- 5. Target Roles Under Buttons (Entrance Stagger 5) -->
+          <div class="target-roles-wrapper hero-stagger-5" aria-label="Target Career Roles">
+            <div class="lead-roles">
+              <span class="lead-role-pill">ML Engineer</span>
+              <span class="lead-role-pill">AI Engineer</span>
+            </div>
+            <p class="roles-secondary">
+              Also open to: <span class="secondary-role-name">Data Scientist</span>, <span
+                class="secondary-role-name">Data Analyst</span>
+            </p>
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+    </section>
+
+    <!-- Infinite Tech Marquee Section -->
+    <section class="marquee-section" aria-label="Technologies Marquee">
+      <div class="marquee-wrapper">
+        <div class="marquee-track">
+          <span class="marquee-item">Python</span>
+          <span class="marquee-item">SQL</span>
+          <span class="marquee-item">C++</span>
+          <span class="marquee-item">Machine Learning</span>
+          <span class="marquee-item">TensorFlow</span>
+          <span class="marquee-item">Keras</span>
+          <span class="marquee-item">scikit-learn</span>
+          <span class="marquee-item">DuckDB</span>
+          <span class="marquee-item">FastAPI</span>
+          <span class="marquee-item">PostgreSQL</span>
+          <span class="marquee-item">Power BI</span>
+          <span class="marquee-item">Streamlit</span>
+          <span class="marquee-item">Git</span>
+          <!-- Duplicate set for seamless looping marquee -->
+          <span class="marquee-item" aria-hidden="true">Python</span>
+          <span class="marquee-item" aria-hidden="true">SQL</span>
+          <span class="marquee-item" aria-hidden="true">C++</span>
+          <span class="marquee-item" aria-hidden="true">Machine Learning</span>
+          <span class="marquee-item" aria-hidden="true">TensorFlow</span>
+          <span class="marquee-item" aria-hidden="true">Keras</span>
+          <span class="marquee-item" aria-hidden="true">scikit-learn</span>
+          <span class="marquee-item" aria-hidden="true">DuckDB</span>
+          <span class="marquee-item" aria-hidden="true">FastAPI</span>
+          <span class="marquee-item" aria-hidden="true">PostgreSQL</span>
+          <span class="marquee-item" aria-hidden="true">Power BI</span>
+          <span class="marquee-item" aria-hidden="true">Streamlit</span>
+          <span class="marquee-item" aria-hidden="true">Git</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section-container">
+      <div class="section-header fade-element">
+        <span class="section-kicker">01 / Projects</span>
+        <h2 class="section-title">Projects</h2>
+        <p class="section-desc">Practical systems engineered for machine learning, analytical querying, and data
+          intelligence.</p>
+      </div>
+
+      <div class="projects-grid">
+
+        <!-- Card 1 (Slot 1: Flagship - DashCrate) -->
+        <article class="project-card glass reveal glass-card fade-element" id="project-dashcrate">
+          <div class="project-preview">
+            <img class="project-preview-img pos-top" src="assets/dashcrate-preview.png"
+              alt="DashCrate AI BI Studio interface and pipeline execution" loading="lazy">
+          </div>
+          <span class="project-label flagship-label">Flagship | AI Systems</span>
+          <br>
+          <h3>DashCrate</h3>
+          <p class="project-desc">Ambiguity-aware business intelligence platform that automates deterministic SQL
+            compilation and multi-agent dashboard synthesis from raw tabular data.</p>
+          <p class="project-role"><strong>What I built:</strong> Multi-agent orchestrator, Pass 2 validation cascade,
+            plan candidate ranker (orchestrator/ranker.py), and evaluation harness.</p>
+          <p class="project-result"><strong>Result:</strong> 90.9% accuracy on synthetic benchmark (20/22 passed) with
+            10.0% high-agreement wrong rate detection (File: tests/eval/results.md); 50.0% accuracy on live LLMs (File:
+            tests/eval/real_results.md)</p>
+          <ul class="stack-pills">
+            <li>Python</li>
+            <li>DuckDB</li>
+            <li>FastAPI</li>
+            <li>Gemini API</li>
+            <li>Groq</li>
+            <li>React</li>
+          </ul>
+        </article>
+
+        <!-- Card 2 (Slot 2: Network Service Availability Prediction) -->
+        <article class="project-card glass reveal glass-card fade-element" id="project-network-telemetry">
+          <div class="project-preview">
+            <img class="project-preview-img pos-center" src="assets/network-features.png"
+              alt="Top 15 Random Forest Feature Importances for Network Service Availability Prediction" loading="lazy">
+          </div>
+          <span class="project-label">Telecom ML &amp; Telemetry</span>
+          <br>
+          <h3>Network Service Availability Prediction</h3>
+          <p class="project-desc">Machine learning framework for retrospective anomaly classification on 32,000
+            multi-dimensional telecom radio access network KPI time series.</p>
+          <p class="project-role"><strong>What I built:</strong> Feature extraction pipeline engineering 110
+            physical-layer KPI statistics (RSRP, UL_SNR, UL_BLER) and class-weighted Random Forest model.</p>
+          <p class="project-result"><strong>Result:</strong> F1 = 0.9577, Precision = 1.0000, False Alarm Rate = 0.0000,
+            Recall = 0.9189 on 32,000 trace windows (File: readme.md)</p>
+          <ul class="stack-pills">
+            <li>Python</li>
+            <li>scikit-learn</li>
+            <li>Pandas</li>
+            <li>NumPy</li>
+            <li>Matplotlib</li>
+            <li>Seaborn</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/srujangandla/network-service-availability-prediction" target="_blank"
+              rel="noopener">Repo</a>
+          </div>
+        </article>
+
+        <!-- Card 3 (Slot 3: Disease Outbreak Prediction and Surge Analysis) -->
+        <article class="project-card glass reveal glass-card fade-element" id="project-disease-outbreak">
+          <div class="project-preview">
+            <img class="project-preview-img pos-center" src="assets/disease-heatmap.png"
+              alt="Correlation matrix of disease case predictors — log_cases, Deaths, Temp_C, precipitation, LAI, spatial and temporal features"
+              loading="lazy">
+          </div>
+          <span class="project-label">Epidemiological ML</span>
+          <br>
+          <h3>Disease Outbreak Prediction and Surge Analysis</h3>
+          <p class="project-desc">Predictive modeling pipeline in R analyzing 8,970 Indian district outbreak reports
+            with climate telemetry to identify case surge drivers.</p>
+          <p class="project-role"><strong>What I built:</strong> End-to-end R analytics pipeline, leakage-free temporal
+            validation splits (train 2009–2017, test 2018–2019, stress 2020–2022), Random Forest regression, and
+            Logistic surge classifier.</p>
+          <p class="project-result"><strong>Result:</strong> Random Forest RMSE = 0.95 (R² = 0.18 vs 0.00 baseline);
+            Logistic surge PR-AUC = 0.44 vs 0.22 baseline (File: README.md)</p>
+          <ul class="stack-pills">
+            <li>R</li>
+            <li>Random Forest</li>
+            <li>Logistic Regression</li>
+            <li>K-Means</li>
+            <li>Caret</li>
+            <li>ggplot2</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/srujangandla/Disease-Outbreak-Prediction-and-Surge-Analysis" target="_blank"
+              rel="noopener">Repo</a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section-container">
+      <div class="section-header fade-element">
+        <span class="section-kicker">02 / Skills</span>
+        <h2 class="section-title">Skills</h2>
+        <p class="section-desc">Foundational programming, machine learning tooling, and high-performance analytical
+          stacks.</p>
+      </div>
+
+      <!-- Compact Bento Layout: 1 Large Panel + 2 Small Panels -->
+      <div class="skills-bento-grid">
+
+        <!-- Bento Large Panel: ML and Data -->
+        <div class="glass-card skill-panel bento-panel bento-large fade-element" id="skills-ml-data">
+          <div class="panel-header">
+            <div class="panel-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="panel-title">ML and Data</h3>
+              <span class="panel-badge">Core Focus</span>
+            </div>
+          </div>
+          <p class="panel-subtext">Deep learning architectures, statistical modeling, data transformations, and
+            vector
+            OLAP querying.</p>
+          <div class="pills-cloud" aria-label="Machine Learning and Data Science Libraries">
+            <span class="skill-pill">TensorFlow</span>
+            <span class="skill-pill">Keras</span>
+            <span class="skill-pill">scikit-learn</span>
+            <span class="skill-pill">DuckDB</span>
+            <span class="skill-pill">Pandas</span>
+            <span class="skill-pill">NumPy</span>
+          </div>
+        </div>
+
+        <!-- Bento Small Panel 1: Languages -->
+        <div class="glass-card skill-panel bento-panel bento-small fade-element" id="skills-languages">
+          <div class="panel-header">
+            <div class="panel-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
+            <h3 class="panel-title">Languages</h3>
+          </div>
+          <p class="panel-subtext">Core syntax, algorithm design, and data querying.</p>
+          <div class="pills-cloud" aria-label="Programming Languages">
+            <span class="skill-pill">Python</span>
+            <span class="skill-pill">SQL</span>
+            <span class="skill-pill">C++</span>
+          </div>
+        </div>
+
+        <!-- Bento Small Panel 2: BI and Tools -->
+        <div class="glass-card skill-panel bento-panel bento-small fade-element" id="skills-bi-tools">
+          <div class="panel-header">
+            <div class="panel-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </div>
+            <h3 class="panel-title">BI and Tools</h3>
+          </div>
+          <p class="panel-subtext">Business intelligence, relational databases, app deployment, and version control.</p>
+          <div class="pills-cloud" aria-label="Business Intelligence and Developer Tools">
+            <span class="skill-pill">Power BI</span>
+            <span class="skill-pill">PostgreSQL</span>
+            <span class="skill-pill">Streamlit</span>
+            <span class="skill-pill">Git</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-container">
+      <div class="fade-element">
+        <div class="glass-card contact-card" id="contact-panel">
+
+          <div class="contact-header">
+            <span class="section-kicker contact-kicker">03 / Contact</span>
+            <div class="contact-status-wrapper">
+              <span class="status-pill contact-status">
+                <span class="status-pulse" aria-hidden="true"></span>
+                Open to internships
+              </span>
+            </div>
+            <h2 class="contact-title">Let's connect</h2>
+            <p class="contact-description">
+              Actively looking for internship and campus placement opportunities across <strong>ML Engineer</strong>,
+              <strong>AI Engineer</strong>, <strong>Data Scientist</strong>, and <strong>Data Analyst</strong> roles.
+              Whether you have an open position or want to discuss machine learning systems, feel free to reach out.
+            </p>
+          </div>
+
+          <!-- Email Action Box -->
+          <div class="email-action-box">
+            <div class="email-details">
+              <span class="email-label">DIRECT EMAIL</span>
+              <a href="mailto:srujangandla4@gmail.com" class="email-link" id="emailLink"
+                aria-label="Send email to Srujan">
+                <svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                <span class="email-text">srujangandla4@gmail.com</span>
+              </a>
+            </div>
+
+            <button type="button" class="btn btn-glass copy-btn" id="copyEmailBtn"
+              aria-label="Copy email address to clipboard">
+              <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span class="copy-text">Copy</span>
+            </button>
+          </div>
+
+          <!-- Social Links -->
+          <div class="contact-links" aria-label="Professional Profiles">
+            <a href="https://www.linkedin.com/in/srujangandla2504/" class="btn btn-glass social-btn" target="_blank"
+              rel="noopener noreferrer" aria-label="LinkedIn Profile (opens in new tab)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                <rect x="2" y="9" width="4" height="12"></rect>
+                <circle cx="4" cy="4" r="2"></circle>
+              </svg>
+              <span>LinkedIn</span>
+            </a>
+
+            <a href="https://github.com/srujangandla" class="btn btn-glass social-btn" target="_blank"
+              rel="noopener noreferrer" aria-label="GitHub Profile (opens in new tab)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+                </path>
+              </svg>
+              <span>GitHub</span>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Semantic Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-info">
+        <p class="footer-title">Srujan</p>
+        <p class="footer-meta">B.E. AI &amp; Data Science • Chaitanya Bharathi Institute of Technology (CBIT), Hyderabad
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Glass Back-to-Top Button (Appears after 600px scroll) -->
+  <button type="button" class="floating-back-to-top glass-card" id="floatingBackToTop" aria-label="Back to top of page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round" aria-hidden="true">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <!-- Vanilla JavaScript -->
+  <script src="script.js"></script>
+</body>
+
+</html>
