@@ -301,7 +301,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ===========================================================================
-// STARFIELD BACKGROUND (Plain 2D Canvas API)
+// STARFIELD BACKGROUND ENGINE (Plain 2D Canvas API)
+// Upgraded: 4 Depth Layers, Depth-of-Field Bokeh, Mouse Parallax, Cursor Push,
+// Scroll Warp, Idle Constellations, Concurrent Shooting Stars, Adaptive Quality
 // ===========================================================================
 function initStarfield() {
   const canvas = document.getElementById('starfield');
@@ -310,110 +312,229 @@ function initStarfield() {
   const ctx = canvas.getContext('2d', { alpha: true });
   if (!ctx) return;
 
-  // Single top-level CONFIG object for tuning
+  // Single top-level CONFIG object exposed for tuning
   const CONFIG = {
-    // Star density: 1 star per 9,000 px^2
-    areaPerStar: 9000,
-    maxStarsDesktop: 220,
-    maxStarsMobile: 90,
+    // Star density: 1 star per 4,500 px^2 (capped at 450 desktop / 160 mobile)
+    areaPerStar: 4500,
+    maxStarsDesktop: 450,
+    maxStarsMobile: 160,
     mobileBreakpoint: 768,
 
-    // Three depth layers
+    // 4 Depth Layers
     layers: [
       {
+        name: 'far_dust',
+        ratio: 0.55,       // 55% of stars
+        radiusMin: 0.3,
+        radiusMax: 0.6,
+        opacityMin: 0.20,
+        opacityMax: 0.40,
+        speedMin: 3.0,
+        speedMax: 6.0,
+        driftAngle: -1.15, // Upward and rightward drift
+        parallaxScroll: 0.015,
+        parallaxMouse: 6,  // max 6px opposite offset
+        hasGlow: false,
+        canPush: false
+      },
+      {
         name: 'far',
-        ratio: 0.60,      // ~60% of stars
-        radiusMin: 0.4,
-        radiusMax: 0.8,
-        opacityMin: 0.25,
-        opacityMax: 0.50,
-        speedX: 3.0,      // px/s drift right
-        speedY: -6.0,     // px/s drift up (total drift: ~6.7 px/s)
-        parallaxScroll: 0.02,
-        parallaxMouse: 3,
-        glow: false
+        ratio: 0.25,       // 25% of stars
+        radiusMin: 0.6,
+        radiusMax: 1.0,
+        opacityMin: 0.35,
+        opacityMax: 0.60,
+        speedMin: 6.0,
+        speedMax: 12.0,
+        driftAngle: -1.15,
+        parallaxScroll: 0.035,
+        parallaxMouse: 12, // max 12px opposite offset
+        hasGlow: false,
+        canPush: false
       },
       {
         name: 'mid',
-        ratio: 0.30,      // ~30% of stars
-        radiusMin: 0.8,
-        radiusMax: 1.2,
-        opacityMin: 0.40,
-        opacityMax: 0.70,
-        speedX: 5.5,      // px/s drift right
-        speedY: -11.0,    // px/s drift up (total drift: ~12.3 px/s)
-        parallaxScroll: 0.05,
-        parallaxMouse: 7,
-        glow: false
+        ratio: 0.15,       // 15% of stars
+        radiusMin: 1.0,
+        radiusMax: 1.5,
+        opacityMin: 0.50,
+        opacityMax: 0.80,
+        speedMin: 12.0,
+        speedMax: 24.0,
+        driftAngle: -1.15,
+        parallaxScroll: 0.065,
+        parallaxMouse: 20, // max 20px opposite offset
+        hasGlow: false,
+        canPush: true      // Layer 3 pushed by cursor
       },
       {
         name: 'near',
-        ratio: 0.10,      // ~10% of stars
-        radiusMin: 1.2,
-        radiusMax: 1.8,
-        opacityMin: 0.60,
-        opacityMax: 0.90,
-        speedX: 8.5,      // px/s drift right
-        speedY: -17.5,    // px/s drift up (total drift: ~19.4 px/s)
+        ratio: 0.05,       // 5% of stars
+        radiusMin: 1.5,
+        radiusMax: 2.4,
+        opacityMin: 0.70,
+        opacityMax: 1.00,
+        speedMin: 24.0,
+        speedMax: 45.0,
+        driftAngle: -1.15,
         parallaxScroll: 0.10,
-        parallaxMouse: 12, // max 12px offset
-        glow: true,
-        glowBlur: 6,
-        glowColor: 'rgba(255, 255, 255, 0.6)'
+        parallaxMouse: 28, // max 28px opposite offset
+        hasGlow: true,     // Pre-rendered sprite glow
+        canPush: true      // Layer 4 pushed by cursor
       }
     ],
 
-    // Twinkle: oscillation with sine wave (period 2-6s, amplitude ~30%)
+    // Twinkle: oscillating sine wave with ~8% bright twinklers
     twinkle: {
-      periodMin: 2.0, // seconds
-      periodMax: 6.0,
-      amplitude: 0.30 // 30% oscillation
+      periodMin: 2.0,      // seconds
+      periodMax: 7.0,
+      amplitudeNormal: 0.25,
+      amplitudeBright: 0.65,
+      brightRatio: 0.08    // ~8% bright twinklers
     },
 
-    // Shooting star: thin white streak (length ~80px, fading trail) every 12-25s, <1s
-    shootingStar: {
+    // Depth-of-Field Bokeh (10-14 soft out-of-focus circles)
+    bokeh: {
       enabled: true,
-      intervalMin: 12000, // ms
-      intervalMax: 25000, // ms
-      length: 80,         // px
-      durationMin: 650,   // ms
-      durationMax: 850,   // ms
-      speedMin: 600,      // px/s
-      speedMax: 850       // px/s
+      countMin: 10,
+      countMax: 14,
+      radiusMin: 14,       // px
+      radiusMax: 40,       // px
+      opacityMin: 0.03,
+      opacityMax: 0.07,
+      speedMin: 35.0,      // px/s
+      speedMax: 55.0,      // px/s
+      parallaxMouse: 34    // max offset
     },
 
-    // Parallax mouse easing (fine pointer only)
-    mouseParallaxEase: 0.06
+    // Cursor Interaction (Gentle push and spring back)
+    cursor: {
+      pushRadius: 120,      // px radius around cursor
+      pushForce: 36,        // max px displacement
+      springBackSpeed: 2.2, // spring back over ~1s
+      parallaxEase: 0.06
+    },
+
+    // Scroll Warp (Vertical streaks proportional to scroll velocity)
+    scrollWarp: {
+      enabled: true,
+      maxStreak: 14,        // max px stretch
+      velocityScale: 0.022,
+      smoothing: 0.18
+    },
+
+    // Subtle Constellation Lines (Idle cursor over hero)
+    constellations: {
+      enabled: true,
+      maxDistance: 110,     // px
+      maxLines: 40,
+      lineColor: 'rgba(255, 255, 255, 0.08)',
+      idleThresholdMs: 320  // ms idle before lines appear
+    },
+
+    // Shooting Stars (Up to 2 concurrent, 6-14s interval, 120-200px, <1s)
+    shootingStars: {
+      enabled: true,
+      intervalMin: 6000,    // ms
+      intervalMax: 14000,   // ms
+      maxConcurrent: 2,     // at most 2 at once
+      lengthMin: 120,       // px
+      lengthMax: 200,       // px
+      durationMin: 650,     // ms
+      durationMax: 900,     // ms
+      speedMin: 650,        // px/s
+      speedMax: 950         // px/s
+    },
+
+    // Adaptive Performance Check
+    quality: {
+      benchmarkDuration: 2000, // first 2 seconds
+      fpsThreshold: 45,        // fps cut-off
+      degradeStarReduction: 0.40 // 40% star reduction
+    }
   };
+
+  // Expose CONFIG globally on window for tuning
+  window.__STARFIELD_CONFIG = CONFIG;
 
   let width = 0;
   let height = 0;
   let dpr = 1;
   let stars = [];
-  let shootingStar = null;
-  let nextShootingStarTime = performance.now() + randomRange(CONFIG.shootingStar.intervalMin, CONFIG.shootingStar.intervalMax);
+  let bokehCircles = [];
+  let activeShootingStars = [];
+  let nextShootingStarTime = performance.now() + randomRange(CONFIG.shootingStars.intervalMin, CONFIG.shootingStars.intervalMax);
 
   let animationFrameId = null;
   let lastTime = 0;
   let isRunning = false;
 
-  // Track scroll position
+  // Track scroll position & velocity
   let scrollY = window.scrollY || document.documentElement.scrollTop;
-  const updateScroll = () => {
-    scrollY = window.scrollY || document.documentElement.scrollTop;
-  };
-  window.addEventListener('scroll', updateScroll, { passive: true });
+  let lastScrollY = scrollY;
+  let rawScrollVelocity = 0;
+  let smoothScrollVelocity = 0;
+  let currentWarpStreak = 0;
 
-  // Track mouse position on fine pointer devices only
+  // Track mouse position on fine pointer devices
   const isFinePointer = window.matchMedia('(pointer: fine)').matches;
   let targetMouseX = 0;
   let targetMouseY = 0;
   let currentMouseX = 0;
   let currentMouseY = 0;
+  let rawPixelMouseX = -9999;
+  let rawPixelMouseY = -9999;
+  let lastMouseMoveTime = 0;
+  let constellationAlpha = 0;
 
+  // Adaptive Quality Metrics
+  let benchmarkStart = 0;
+  let benchmarkFrames = 0;
+  let qualityBenchmarkDone = false;
+  window.__measuredFps = 60; // Initialized
+
+  // Pre-render Offscreen Glow Sprite for Layer 4 Stars
+  const glowSpriteCanvas = document.createElement('canvas');
+  glowSpriteCanvas.width = 64;
+  glowSpriteCanvas.height = 64;
+  const glowCtx = glowSpriteCanvas.getContext('2d');
+  const glowGrad = glowCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  glowGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+  glowGrad.addColorStop(0.25, 'rgba(255, 255, 255, 0.65)');
+  glowGrad.addColorStop(0.55, 'rgba(255, 255, 255, 0.18)');
+  glowGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  glowCtx.fillStyle = glowGrad;
+  glowCtx.fillRect(0, 0, 64, 64);
+
+  // Pre-render Offscreen Bokeh Sprite
+  const bokehSpriteCanvas = document.createElement('canvas');
+  bokehSpriteCanvas.width = 96;
+  bokehSpriteCanvas.height = 96;
+  const bokehCtx = bokehSpriteCanvas.getContext('2d');
+  const bokehGrad = bokehCtx.createRadialGradient(48, 48, 0, 48, 48, 48);
+  bokehGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+  bokehGrad.addColorStop(0.35, 'rgba(255, 255, 255, 0.50)');
+  bokehGrad.addColorStop(0.70, 'rgba(255, 255, 255, 0.14)');
+  bokehGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  bokehCtx.fillStyle = bokehGrad;
+  bokehCtx.fillRect(0, 0, 96, 96);
+
+  // Scroll handler tracking velocity
+  const onScroll = () => {
+    const curY = window.scrollY || document.documentElement.scrollTop;
+    rawScrollVelocity += Math.abs(curY - lastScrollY);
+    lastScrollY = curY;
+    scrollY = curY;
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Mouse move handler
   if (isFinePointer) {
     window.addEventListener('mousemove', (e) => {
-      // Normalized between -1 and +1 from screen center
+      rawPixelMouseX = e.clientX;
+      rawPixelMouseY = e.clientY;
+      lastMouseMoveTime = performance.now();
+      // Normalized between -1 and +1 from center
       targetMouseX = (e.clientX / (width || window.innerWidth) - 0.5) * 2;
       targetMouseY = (e.clientY / (height || window.innerHeight) - 0.5) * 2;
     }, { passive: true });
@@ -421,17 +542,21 @@ function initStarfield() {
     window.addEventListener('mouseleave', () => {
       targetMouseX = 0;
       targetMouseY = 0;
+      rawPixelMouseX = -9999;
+      rawPixelMouseY = -9999;
     });
   }
 
-  // Helper random function
+  // Random range helper
   function randomRange(min, max) {
     return min + Math.random() * (max - min);
   }
 
-  // Generate / populate stars
-  function createStars() {
+  // Populate Stars & Bokeh
+  function createUniverse() {
     stars = [];
+    bokehCircles = [];
+
     const isMobile = width < CONFIG.mobileBreakpoint;
     const area = width * height;
     const targetCount = Math.min(
@@ -439,26 +564,54 @@ function initStarfield() {
       isMobile ? CONFIG.maxStarsMobile : CONFIG.maxStarsDesktop
     );
 
-    // Compute star count per layer
+    // Populate stars by 4 depth layers
     CONFIG.layers.forEach((layer, layerIdx) => {
       const layerCount = Math.max(1, Math.round(targetCount * layer.ratio));
       for (let i = 0; i < layerCount; i++) {
+        const speed = randomRange(layer.speedMin, layer.speedMax);
+        const isBright = Math.random() < CONFIG.twinkle.brightRatio;
+
         stars.push({
           x: Math.random() * width,
           y: Math.random() * height,
           radius: randomRange(layer.radiusMin, layer.radiusMax),
           baseOpacity: randomRange(layer.opacityMin, layer.opacityMax),
           layerIndex: layerIdx,
-          speedX: layer.speedX,
-          speedY: layer.speedY,
+          speedX: Math.cos(layer.driftAngle) * speed,
+          speedY: Math.sin(layer.driftAngle) * speed,
           twinklePhase: Math.random() * Math.PI * 2,
-          twinklePeriod: randomRange(CONFIG.twinkle.periodMin, CONFIG.twinkle.periodMax)
+          twinklePeriod: randomRange(CONFIG.twinkle.periodMin, CONFIG.twinkle.periodMax),
+          amplitude: isBright ? CONFIG.twinkle.amplitudeBright : CONFIG.twinkle.amplitudeNormal,
+          isBright,
+          // Cursor displacement for layers 3 and 4
+          dispX: 0,
+          dispY: 0,
+          targetDispX: 0,
+          targetDispY: 0
         });
       }
     });
+
+    // Populate depth-of-field bokeh foreground circles
+    if (CONFIG.bokeh.enabled && !isMobile) {
+      const bokehCount = Math.floor(randomRange(CONFIG.bokeh.countMin, CONFIG.bokeh.countMax + 1));
+      for (let b = 0; b < bokehCount; b++) {
+        const speed = randomRange(CONFIG.bokeh.speedMin, CONFIG.bokeh.speedMax);
+        bokehCircles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: randomRange(CONFIG.bokeh.radiusMin, CONFIG.bokeh.radiusMax),
+          baseOpacity: randomRange(CONFIG.bokeh.opacityMin, CONFIG.bokeh.opacityMax),
+          speedX: Math.cos(-1.15) * speed,
+          speedY: Math.sin(-1.15) * speed,
+          twinklePhase: Math.random() * Math.PI * 2,
+          twinklePeriod: randomRange(4.0, 8.0)
+        });
+      }
+    }
   }
 
-  // Resize canvas with DPR scaling
+  // Canvas Resize Handler
   function resizeCanvas() {
     width = window.innerWidth;
     height = window.innerHeight;
@@ -466,13 +619,10 @@ function initStarfield() {
 
     canvas.width = Math.floor(width * dpr);
     canvas.height = Math.floor(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
 
-    createStars();
-
-    const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (motionReduced) {
-      renderStaticFrame();
-    }
+    createUniverse();
   }
 
   // Debounced window resize listener
@@ -484,84 +634,120 @@ function initStarfield() {
     }, 150);
   }, { passive: true });
 
-  // Spawn shooting star
+  // Spawn Shooting Star (Allow up to 2 concurrent)
   function spawnShootingStar(now) {
-    if (!CONFIG.shootingStar.enabled) return;
-    const angle = (Math.PI / 4) + (Math.random() - 0.5) * 0.45; // 32° to 58° angle downwards
-    const duration = randomRange(CONFIG.shootingStar.durationMin, CONFIG.shootingStar.durationMax);
-    const speed = randomRange(CONFIG.shootingStar.speedMin, CONFIG.shootingStar.speedMax);
-    const startX = Math.random() * (width * 0.75) + (width * 0.05);
-    const startY = Math.random() * (height * 0.35);
+    if (activeShootingStars.length >= CONFIG.shootingStars.maxConcurrent) return;
 
-    shootingStar = {
-      startTime: now,
-      duration,
-      speed,
+    const angle = randomRange(0.40, 0.75); // Downward-right diagonal
+    const length = randomRange(CONFIG.shootingStars.lengthMin, CONFIG.shootingStars.lengthMax);
+    const duration = randomRange(CONFIG.shootingStars.durationMin, CONFIG.shootingStars.durationMax);
+    const speed = randomRange(CONFIG.shootingStars.speedMin, CONFIG.shootingStars.speedMax);
+
+    const startX = randomRange(-40, width * 0.85);
+    const startY = randomRange(-40, height * 0.45);
+
+    activeShootingStars.push({
       startX,
       startY,
       angle,
-      length: CONFIG.shootingStar.length
-    };
+      length,
+      duration,
+      speed,
+      startTime: now
+    });
+
+    nextShootingStarTime = now + randomRange(CONFIG.shootingStars.intervalMin, CONFIG.shootingStars.intervalMax);
   }
 
-  // Update and draw shooting star
-  function renderShootingStar(now) {
-    if (!shootingStar) {
-      if (now >= nextShootingStarTime) {
-        spawnShootingStar(now);
+  // Render Shooting Stars
+  function renderShootingStars(now) {
+    if (!CONFIG.shootingStars.enabled) return;
+
+    // Check spawn
+    if (now >= nextShootingStarTime && activeShootingStars.length < CONFIG.shootingStars.maxConcurrent) {
+      spawnShootingStar(now);
+    }
+
+    // Render active
+    for (let i = activeShootingStars.length - 1; i >= 0; i--) {
+      const star = activeShootingStars[i];
+      const elapsed = now - star.startTime;
+      const progress = elapsed / star.duration;
+
+      if (progress >= 1) {
+        activeShootingStars.splice(i, 1);
+        continue;
       }
-      return;
+
+      const dist = (elapsed / 1000) * star.speed;
+      const headX = star.startX + Math.cos(star.angle) * dist;
+      const headY = star.startY + Math.sin(star.angle) * dist;
+      const tailX = headX - Math.cos(star.angle) * star.length;
+      const tailY = headY - Math.sin(star.angle) * star.length;
+
+      let alpha = 1;
+      if (progress < 0.2) {
+        alpha = progress / 0.2;
+      } else if (progress > 0.6) {
+        alpha = (1 - progress) / 0.4;
+      }
+      alpha = Math.max(0, Math.min(1, alpha));
+
+      const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
+      grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+      grad.addColorStop(0.7, `rgba(255, 255, 255, ${(alpha * 0.45).toFixed(3)})`);
+      grad.addColorStop(1, `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(3)})`);
+
+      ctx.save();
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(headX, headY);
+      ctx.stroke();
+
+      ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.98).toFixed(3)})`;
+      ctx.beginPath();
+      ctx.arc(headX, headY, 1.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     }
+  }
 
-    const elapsed = now - shootingStar.startTime;
-    const progress = elapsed / shootingStar.duration;
-
-    if (progress >= 1) {
-      shootingStar = null;
-      nextShootingStarTime = now + randomRange(CONFIG.shootingStar.intervalMin, CONFIG.shootingStar.intervalMax);
-      return;
-    }
-
-    // Distance traveled
-    const dist = (elapsed / 1000) * shootingStar.speed;
-    const headX = shootingStar.startX + Math.cos(shootingStar.angle) * dist;
-    const headY = shootingStar.startY + Math.sin(shootingStar.angle) * dist;
-    const tailX = headX - Math.cos(shootingStar.angle) * shootingStar.length;
-    const tailY = headY - Math.sin(shootingStar.angle) * shootingStar.length;
-
-    // Fade envelope: in during first 20%, out during last 40%
-    let alpha = 1;
-    if (progress < 0.2) {
-      alpha = progress / 0.2;
-    } else if (progress > 0.6) {
-      alpha = (1 - progress) / 0.4;
-    }
-    alpha = Math.max(0, Math.min(1, alpha));
-
-    // Gradient trail
-    const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
-    grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-    grad.addColorStop(0.7, `rgba(255, 255, 255, ${alpha * 0.45})`);
-    grad.addColorStop(1, `rgba(255, 255, 255, ${alpha * 0.9})`);
+  // Draw Subtle Constellation Lines between Near Stars
+  function renderConstellationLines(nearStars) {
+    if (!CONFIG.constellations.enabled || nearStars.length < 2 || constellationAlpha < 0.02) return;
 
     ctx.save();
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = 1.2;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(tailX, tailY);
-    ctx.lineTo(headX, headY);
-    ctx.stroke();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = `rgba(255, 255, 255, ${(0.08 * constellationAlpha).toFixed(3)})`;
 
-    // Small head spark
-    ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.95})`;
-    ctx.beginPath();
-    ctx.arc(headX, headY, 1.2, 0, Math.PI * 2);
-    ctx.fill();
+    let linesDrawn = 0;
+    const maxLines = CONFIG.constellations.maxLines;
+    const maxDist = CONFIG.constellations.maxDistance;
+
+    for (let i = 0; i < nearStars.length && linesDrawn < maxLines; i++) {
+      const s1 = nearStars[i];
+      for (let j = i + 1; j < nearStars.length && linesDrawn < maxLines; j++) {
+        const s2 = nearStars[j];
+        const dx = s1.screenX - s2.screenX;
+        const dy = s1.screenY - s2.screenY;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < maxDist) {
+          ctx.beginPath();
+          ctx.moveTo(s1.screenX, s1.screenY);
+          ctx.lineTo(s2.screenX, s2.screenY);
+          ctx.stroke();
+          linesDrawn++;
+        }
+      }
+    }
     ctx.restore();
   }
 
-  // Draw a static frame (for prefers-reduced-motion)
+  // Static Frame (prefers-reduced-motion)
   function renderStaticFrame() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
@@ -569,9 +755,10 @@ function initStarfield() {
     stars.forEach(star => {
       const layer = CONFIG.layers[star.layerIndex];
       ctx.save();
-      if (layer.glow) {
-        ctx.shadowBlur = layer.glowBlur;
-        ctx.shadowColor = layer.glowColor;
+      if (layer.hasGlow) {
+        const glowSize = star.radius * 7;
+        ctx.globalAlpha = star.baseOpacity;
+        ctx.drawImage(glowSpriteCanvas, star.x - glowSize / 2, star.y - glowSize / 2, glowSize, glowSize);
       }
       ctx.fillStyle = `rgba(255, 255, 255, ${star.baseOpacity})`;
       ctx.beginPath();
@@ -581,7 +768,32 @@ function initStarfield() {
     });
   }
 
-  // Animation frame loop
+  // Adaptive Quality Benchmark Check
+  function evaluateQuality(currentTime) {
+    if (qualityBenchmarkDone) return;
+    if (!benchmarkStart) {
+      benchmarkStart = currentTime;
+      benchmarkFrames = 0;
+      return;
+    }
+    benchmarkFrames++;
+    const elapsed = currentTime - benchmarkStart;
+    if (elapsed >= CONFIG.quality.benchmarkDuration) {
+      const fps = (benchmarkFrames * 1000) / elapsed;
+      window.__measuredFps = Math.round(fps);
+      qualityBenchmarkDone = true;
+
+      if (fps < CONFIG.quality.fpsThreshold) {
+        console.warn(`[Starfield] Average FPS ${fps.toFixed(1)} < ${CONFIG.quality.fpsThreshold}. Adapting quality.`);
+        const removeCount = Math.floor(stars.length * CONFIG.quality.degradeStarReduction);
+        stars.splice(0, removeCount);
+        CONFIG.bokeh.enabled = false;
+        CONFIG.constellations.enabled = false;
+      }
+    }
+  }
+
+  // Main Animation Loop
   function loop(currentTime) {
     if (!isRunning) return;
 
@@ -589,78 +801,174 @@ function initStarfield() {
     const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
     lastTime = currentTime;
 
+    // Run performance benchmark
+    evaluateQuality(currentTime);
+
     // Smooth mouse parallax interpolation
     if (isFinePointer) {
-      currentMouseX += (targetMouseX - currentMouseX) * CONFIG.mouseParallaxEase;
-      currentMouseY += (targetMouseY - currentMouseY) * CONFIG.mouseParallaxEase;
+      currentMouseX += (targetMouseX - currentMouseX) * CONFIG.cursor.parallaxEase;
+      currentMouseY += (targetMouseY - currentMouseY) * CONFIG.cursor.parallaxEase;
     }
 
-    // Clear canvas
+    // Smooth scroll velocity and vertical warp
+    smoothScrollVelocity += (rawScrollVelocity - smoothScrollVelocity) * CONFIG.scrollWarp.smoothing;
+    rawScrollVelocity *= 0.82; // Velocity decay
+    currentWarpStreak = Math.min(CONFIG.scrollWarp.maxStreak, smoothScrollVelocity * CONFIG.scrollWarp.velocityScale);
+
+    // Clear Canvas
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
 
     const timeSeconds = currentTime / 1000;
 
-    // Draw stars grouped by layer for batch performance
+    // Check if cursor is idle over hero section for constellation lines
+    const isHeroVisible = scrollY < window.innerHeight * 0.85;
+    const isCursorIdle = (currentTime - lastMouseMoveTime) > CONFIG.constellations.idleThresholdMs && isHeroVisible;
+    if (isCursorIdle) {
+      constellationAlpha = Math.min(1, constellationAlpha + dt * 2.5);
+    } else {
+      constellationAlpha = Math.max(0, constellationAlpha - dt * 3.5);
+    }
+
+    const nearStarsForConstellations = [];
+
+    // Draw Stars Grouped by 4 Layers
     for (let layerIdx = 0; layerIdx < CONFIG.layers.length; layerIdx++) {
       const layer = CONFIG.layers[layerIdx];
       const layerStars = stars.filter(s => s.layerIndex === layerIdx);
 
-      ctx.save();
-      if (layer.glow) {
-        ctx.shadowBlur = layer.glowBlur;
-        ctx.shadowColor = layer.glowColor;
-      }
+      // Mouse parallax shift opposite to cursor
+      const mouseOffsetX = isFinePointer ? -currentMouseX * layer.parallaxMouse : 0;
+      const mouseOffsetY = isFinePointer ? -currentMouseY * layer.parallaxMouse : 0;
+      const scrollOffsetY = scrollY * layer.parallaxScroll;
 
-      const parallaxY = scrollY * layer.parallaxScroll;
-      const mouseX = isFinePointer ? currentMouseX * layer.parallaxMouse : 0;
-      const mouseY = isFinePointer ? currentMouseY * layer.parallaxMouse : 0;
+      ctx.save();
 
       for (let i = 0; i < layerStars.length; i++) {
         const star = layerStars[i];
 
-        // Motion update (diagonal drift)
+        // Motion update with wrapping
         star.x += star.speedX * dt;
         star.y += star.speedY * dt;
 
-        // Wrap around boundaries
-        if (star.y < -10) {
-          star.y = height + 10;
+        if (star.y < -15) {
+          star.y = height + 15;
           star.x = Math.random() * width;
-        } else if (star.x > width + 10) {
-          star.x = -10;
+        } else if (star.x > width + 15) {
+          star.x = -15;
           star.y = Math.random() * height;
-        } else if (star.y > height + 10) {
-          star.y = -10;
+        } else if (star.y > height + 15) {
+          star.y = -15;
           star.x = Math.random() * width;
-        } else if (star.x < -10) {
-          star.x = width + 10;
+        } else if (star.x < -15) {
+          star.x = width + 15;
           star.y = Math.random() * height;
+        }
+
+        // Screen position with parallax
+        let drawX = (star.x + mouseOffsetX) % width;
+        if (drawX < 0) drawX += width;
+
+        let drawY = (star.y - scrollOffsetY + mouseOffsetY) % height;
+        if (drawY < 0) drawY += height;
+
+        // Cursor push interaction for layers 3 and 4
+        if (layer.canPush && isFinePointer && rawPixelMouseX > -500) {
+          const dx = drawX - rawPixelMouseX;
+          const dy = drawY - rawPixelMouseY;
+          const dist = Math.hypot(dx, dy);
+
+          if (dist < CONFIG.cursor.pushRadius && dist > 1) {
+            const force = (1 - dist / CONFIG.cursor.pushRadius) * CONFIG.cursor.pushForce;
+            star.targetDispX = (dx / dist) * force;
+            star.targetDispY = (dy / dist) * force;
+          } else {
+            star.targetDispX = 0;
+            star.targetDispY = 0;
+          }
+
+          // Ease back / spring back over ~1s
+          star.dispX += (star.targetDispX - star.dispX) * Math.min(1, dt * CONFIG.cursor.springBackSpeed);
+          star.dispY += (star.targetDispY - star.dispY) * Math.min(1, dt * CONFIG.cursor.springBackSpeed);
+
+          drawX += star.dispX;
+          drawY += star.dispY;
+        }
+
+        // Collect near stars for constellation lines
+        if ((layerIdx === 2 || layerIdx === 3) && constellationAlpha > 0.02) {
+          nearStarsForConstellations.push({ screenX: drawX, screenY: drawY });
         }
 
         // Twinkle factor
         const twinkleCycle = ((timeSeconds / star.twinklePeriod) * Math.PI * 2) + star.twinklePhase;
-        const twinkleFactor = 1 + CONFIG.twinkle.amplitude * Math.sin(twinkleCycle);
-        const currentOpacity = Math.max(0.1, Math.min(1, star.baseOpacity * twinkleFactor));
+        const twinkleFactor = 1 + star.amplitude * Math.sin(twinkleCycle);
+        const currentOpacity = Math.max(0.12, Math.min(1, star.baseOpacity * twinkleFactor));
 
-        // Effective position with scroll and mouse parallax
-        let drawX = (star.x + mouseX) % width;
-        if (drawX < 0) drawX += width;
+        // Draw Layer 4 Glow Sprite
+        if (layer.hasGlow) {
+          const glowSize = star.radius * 7;
+          ctx.globalAlpha = (currentOpacity * 0.75);
+          ctx.drawImage(glowSpriteCanvas, drawX - glowSize / 2, drawY - glowSize / 2, glowSize, glowSize);
+          ctx.globalAlpha = 1.0;
+        }
 
-        let drawY = (star.y - parallaxY + mouseY) % height;
-        if (drawY < 0) drawY += height;
-
+        // Draw Star with Scroll Warp
         ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity.toFixed(3)})`;
-        ctx.beginPath();
-        ctx.arc(drawX, drawY, star.radius, 0, Math.PI * 2);
-        ctx.fill();
+        if (currentWarpStreak > 0.5) {
+          ctx.lineWidth = star.radius * 2;
+          ctx.strokeStyle = `rgba(255, 255, 255, ${currentOpacity.toFixed(3)})`;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(drawX, drawY - currentWarpStreak * 0.5);
+          ctx.lineTo(drawX, drawY + currentWarpStreak * 0.5);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(drawX, drawY, star.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
 
       ctx.restore();
     }
 
-    // Shooting star
-    renderShootingStar(currentTime);
+    // Render Constellation Lines
+    renderConstellationLines(nearStarsForConstellations);
+
+    // Render Depth-of-Field Bokeh Foreground Circles
+    if (CONFIG.bokeh.enabled && bokehCircles.length > 0) {
+      const bokehMouseX = isFinePointer ? -currentMouseX * CONFIG.bokeh.parallaxMouse : 0;
+      const bokehMouseY = isFinePointer ? -currentMouseY * CONFIG.bokeh.parallaxMouse : 0;
+      const bokehScrollY = scrollY * 0.12;
+
+      for (let b = 0; b < bokehCircles.length; b++) {
+        const bokeh = bokehCircles[b];
+
+        bokeh.x += bokeh.speedX * dt;
+        bokeh.y += bokeh.speedY * dt;
+
+        if (bokeh.y < -50) bokeh.y = height + 50;
+        else if (bokeh.x > width + 50) bokeh.x = -50;
+        else if (bokeh.y > height + 50) bokeh.y = -50;
+        else if (bokeh.x < -50) bokeh.x = width + 50;
+
+        let bx = (bokeh.x + bokehMouseX) % width;
+        if (bx < 0) bx += width;
+        let by = (bokeh.y - bokehScrollY + bokehMouseY) % height;
+        if (by < 0) by += height;
+
+        const bokehCycle = ((timeSeconds / bokeh.twinklePeriod) * Math.PI * 2) + bokeh.twinklePhase;
+        const opacity = Math.max(0.02, Math.min(0.08, bokeh.baseOpacity * (1 + 0.3 * Math.sin(bokehCycle))));
+
+        ctx.globalAlpha = opacity;
+        ctx.drawImage(bokehSpriteCanvas, bx - bokeh.radius, by - bokeh.radius, bokeh.radius * 2, bokeh.radius * 2);
+      }
+      ctx.globalAlpha = 1.0;
+    }
+
+    // Render Shooting Stars
+    renderShootingStars(currentTime);
 
     animationFrameId = requestAnimationFrame(loop);
   }

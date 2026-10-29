@@ -417,6 +417,7 @@ main,
   background: radial-gradient(ellipse 100% 70% at 50% 100%, #16161C 0%, #0D0D11 40%, #070709 70%, #050506 95%);
   box-shadow: 
     0 -1px 0 var(--planet-horizon-rim),
+    0 -2px 14px rgba(255, 255, 255, 0.12),
     0 -8px 28px var(--planet-horizon-glow),
     0 -24px 60px rgba(255, 255, 255, 0.02);
   pointer-events: none;
@@ -879,13 +880,24 @@ main,
 .hero-section {
   position: relative;
   z-index: 1;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: var(--space-3) var(--space-3) var(--space-4);
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: calc(100svh - var(--nav-height));
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-3);
+  overflow: hidden;
+}
+
+.hero-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(16px, 4vw, 48px);
+  padding-right: clamp(16px, 4vw, 48px);
+  position: relative;
 }
 
 .hero-layout {
@@ -894,24 +906,30 @@ main,
   gap: var(--space-4);
   width: 100%;
   align-items: center;
+  position: relative;
 }
 
 @media (min-width: 960px) {
   .hero-layout {
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 64px;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 48px;
     align-items: center;
   }
 
   .hero-content {
-    max-width: 640px;
+    max-width: 680px;
   }
 
   .hero-card-side {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
+    height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     justify-self: center;
     align-self: center;
+    position: relative;
   }
 }
 
@@ -923,7 +941,13 @@ main,
 
   .hero-card-side {
     width: 100%;
-    max-width: 440px;
+    max-width: 320px;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1.5rem auto 0;
+    position: relative;
   }
 }
 
@@ -948,32 +972,43 @@ main,
 
 .hero-kickers {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   margin-bottom: var(--space-2);
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.hero-kickers::-webkit-scrollbar {
+  display: none;
 }
 
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.825rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-body);
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  padding: 0.35rem 0.8rem;
+  padding: 0.35rem 0.75rem;
   border-radius: var(--radius-pill);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   min-height: 36px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .badge-icon {
   width: 14px;
   height: 14px;
   color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .status-pill {
@@ -985,9 +1020,11 @@ main,
   color: var(--text-heading);
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--glass-border);
-  padding: 0.35rem 0.8rem;
+  padding: 0.35rem 0.75rem;
   border-radius: var(--radius-pill);
   min-height: 36px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .status-pulse {
@@ -1006,7 +1043,7 @@ main,
 }
 
 .hero-title {
-  font-size: clamp(2.4rem, 5vw, 4.25rem);
+  font-size: clamp(2.4rem, 4.6vw, 4rem);
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: -0.02em;
@@ -1086,6 +1123,138 @@ main,
 .secondary-role-name {
   color: var(--text-body);
   font-weight: 500;
+}
+
+/* ==========================================================================
+   SPACE VISUAL FEATURES: HERO RINGED PLANET, MOON & DISTANT GALAXY
+   Pure CSS & Inline SVG — Transform-only animations
+   ========================================================================== */
+
+/* Faint Distant Galaxy (Upper-Right) */
+.space-galaxy {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  width: 120px;
+  height: 48px;
+  border-radius: 50%;
+  transform: rotate(-28deg);
+  opacity: 0.12; /* Under 0.15 */
+  pointer-events: none;
+  z-index: 0;
+  background: 
+    radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.95) 0%, rgba(200, 200, 215, 0.45) 25%, transparent 65%),
+    radial-gradient(ellipse at 50% 50%, rgba(180, 180, 200, 0.35) 0%, rgba(100, 100, 120, 0.12) 55%, transparent 85%);
+  filter: blur(2px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
+}
+
+/* Ringed Planet Scene (Right half of Hero — Replaces Currently Building) */
+.hero-space-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (max-width: 959px) {
+  .hero-space-scene {
+    min-height: 280px;
+  }
+}
+
+.ringed-planet-system {
+  position: relative;
+  width: 340px;
+  height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: planetSlowFloat 90s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@media (max-width: 959px) {
+  .ringed-planet-system {
+    transform: scale(0.82);
+  }
+}
+
+@keyframes planetSlowFloat {
+  0% { transform: translateY(0) rotate(-16deg); }
+  50% { transform: translateY(-10px) rotate(-13deg); }
+  100% { transform: translateY(0) rotate(-16deg); }
+}
+
+/* Dark Grey Sphere with Bright Upper-Left Rim Light */
+.planet-sphere {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+  background: radial-gradient(circle at 30% 26%, #2C2C36 0%, #17171E 45%, #0B0B0E 75%, #050507 100%);
+  box-shadow: 
+    inset 2px 2px 8px rgba(255, 255, 255, 0.5),
+    inset -5px -5px 16px rgba(0, 0, 0, 0.85),
+    0 0 28px rgba(255, 255, 255, 0.08);
+}
+
+/* Thin Tilted SVG Ring passing behind and in front of sphere */
+.planet-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 340px;
+  height: 140px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.planet-ring-back {
+  z-index: 1; /* Passes behind sphere */
+}
+
+.planet-ring-front {
+  z-index: 3; /* Passes in front of sphere */
+}
+
+/* Small Moon Orbiting on Elliptical Path (transform only, 40s) */
+.planet-moon-track {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 280px;
+  height: 110px;
+  margin-top: -55px;
+  margin-left: -140px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 4;
+  animation: moonOrbit 40s linear infinite;
+  transform-origin: center center;
+}
+
+@keyframes moonOrbit {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.planet-moon {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #FFFFFF 0%, #90909A 55%, #181820 100%);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
 
 /* ==========================================================================
@@ -2168,7 +2337,9 @@ main,
     animation: none !important;
   }
 
-  .currently-building-card {
+  .currently-building-card,
+  .ringed-planet-system,
+  .planet-moon-track {
     animation: none !important;
     transform: none !important;
   }
