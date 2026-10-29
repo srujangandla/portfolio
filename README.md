@@ -1,6 +1,6 @@
 # Srujan Gandla — Portfolio
 
-[![Live Site](https://img.shields.io/badge/Live_Site-srujangandla.github.io-white?style=flat-square&logo=github&logoColor=black)](https://srujangandla.github.io/)
+[![Live Site](https://img.shields.io/badge/Live%20Site-Yet%20to%20Deploy-lightgrey)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gray?style=flat-square)](LICENSE)
 [![Tech](https://img.shields.io/badge/Built_With-HTML5_|_CSS3_|_Vanilla_JS-white?style=flat-square)](https://github.com/srujangandla)
 
@@ -22,7 +22,6 @@ A lightweight, high-performance personal portfolio engineered with semantic HTML
 
 | Project | Domain | Stack | Highlights & Validated Results |
 |:---|:---|:---|:---|
-| **[DashCrate](https://github.com/srujangandla)** (Flagship) | AI Systems & BI | Python, DuckDB, FastAPI, Groq, Gemini API, React | Ambiguity-aware BI studio automating deterministic SQL synthesis. Achieved **90.9% accuracy** on synthetic benchmark (20/22 passed) with 10.0% high-agreement wrong rate detection. |
 | **[Network Service Availability Prediction](https://github.com/srujangandla/network-service-availability-prediction)** | Telecom Telemetry ML | Python, scikit-learn, Pandas, NumPy, Matplotlib | Retrospective anomaly classification across 32,000 multi-dimensional RAN KPI time series. Achieved **F1 = 0.9577**, **Precision = 1.0000**, and **FAR = 0.0000**. |
 | **[Disease Outbreak Prediction](https://github.com/srujangandla/disease-outbreak-prediction)** | Epidemiological ML | R, Python, Poisson / Negative Binomial, Random Forest | Multimodal outbreak forecasting analyzing climatic, environmental (LAI, precipitation), and spatial-temporal features. |
 
