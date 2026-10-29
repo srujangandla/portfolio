@@ -1,83 +1,86 @@
-# Srujan | AI & Data Science Portfolio
+# Srujan Gandla — Portfolio
 
-A minimalist, high-contrast, black-and-grey personal portfolio website built with semantic HTML, vanilla CSS, and vanilla JavaScript. Features glassmorphism cards, blurred ambient drifting background depth, white glow interactions, and full responsive support.
+[![Live Site](https://img.shields.io/badge/Live_Site-srujangandla.github.io-white?style=flat-square&logo=github&logoColor=black)](https://srujangandla.github.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-gray?style=flat-square)](LICENSE)
+[![Tech](https://img.shields.io/badge/Built_With-HTML5_|_CSS3_|_Vanilla_JS-white?style=flat-square)](https://github.com/srujangandla)
 
-Designed for an undergraduate in **B.E. AI & Data Science** at **Chaitanya Bharathi Institute of Technology (CBIT), Hyderabad**, targeting roles in:
-- **Machine Learning Engineer**
-- **AI Engineer**
-- **Data Scientist**
-- **Data Analyst**
+A lightweight, high-performance personal portfolio engineered with semantic HTML5, modern CSS3, and vanilla JavaScript. Designed with a strict monochrome palette (black, grey, and pure white), cosmic glassmorphism, dynamic multi-layer 2D canvas starfield, and subtle scroll parallax.
 
 ---
 
-## 🚀 Live Demo & Deployment
+## 🌌 Highlights
 
-This project has **zero build steps** and **no external dependencies or frameworks**. It is ready to deploy directly onto **GitHub Pages**.
-
-### GitHub Pages Deployment Steps
-
-1. **Create a GitHub Repository**:
-   - Go to [GitHub.com](https://github.com) and create a new repository named `portfolio` (or `srujangandla.github.io`).
-   - If you name it `srujangandla.github.io`, your site will be hosted directly at `https://srujangandla.github.io/`.
-
-2. **Push your code**:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial portfolio release"
-   git branch -M main
-   git remote add origin https://github.com/srujangandla/portfolio.git
-   git push -u origin main
-   ```
-
-3. **Enable GitHub Pages**:
-   - In your repository, go to **Settings** > **Pages** (under "Code and automation" in the left sidebar).
-   - Under **Build and deployment**:
-     - **Source**: Select `Deploy from a branch`.
-     - **Branch**: Select `main` and folder `/ (root)`.
-     - Click **Save**.
-   - GitHub Pages will build and deploy your site within 1–2 minutes. Your URL will be shown at the top of the Pages settings tab.
+- **Zero Dependencies**: Pure web standards with zero frameworks or runtime libraries — total bundle weight is under **105 KB**.
+- **Monochrome Cosmic Theme**: Black `#050506` to `#0B0B0D` gradient, glassmorphic cards with white glow borders, and an SVG film-grain texture.
+- **Dynamic 2D Canvas Starfield**: Multi-depth drifting white dots with sine-wave twinkling, shooting stars, device-pixel-ratio scaling, and auto-pause on inactive tabs.
+- **Micro-Parallax & Depth**: Smooth `requestAnimationFrame`-throttled scroll parallax for nebula blobs and the Milky Way diagonal band (disabled on touch devices for fluid scrolling).
+- **Accessibility & Contrast**: Strict WCAG AAA compliance (>7:1 contrast on headings, >4.5:1 on muted copy), keyboard navigation focus rings, screen-reader landmarks, and full `prefers-reduced-motion` support.
 
 ---
 
-## 📁 Repository Structure
+## 🛠️ Featured Engineering Projects
+
+| Project | Domain | Stack | Highlights & Validated Results |
+|:---|:---|:---|:---|
+| **[DashCrate](https://github.com/srujangandla)** (Flagship) | AI Systems & BI | Python, DuckDB, FastAPI, Groq, Gemini API, React | Ambiguity-aware BI studio automating deterministic SQL synthesis. Achieved **90.9% accuracy** on synthetic benchmark (20/22 passed) with 10.0% high-agreement wrong rate detection. |
+| **[Network Service Availability Prediction](https://github.com/srujangandla/network-service-availability-prediction)** | Telecom Telemetry ML | Python, scikit-learn, Pandas, NumPy, Matplotlib | Retrospective anomaly classification across 32,000 multi-dimensional RAN KPI time series. Achieved **F1 = 0.9577**, **Precision = 1.0000**, and **FAR = 0.0000**. |
+| **[Disease Outbreak Prediction](https://github.com/srujangandla/disease-outbreak-prediction)** | Epidemiological ML | R, Python, Poisson / Negative Binomial, Random Forest | Multimodal outbreak forecasting analyzing climatic, environmental (LAI, precipitation), and spatial-temporal features. |
+
+---
+
+## 📂 Repository Structure
 
 ```text
-├── index.html          # Semantic HTML5 page structure with accessibility landmarks
-├── styles.css          # Monochromatic glassmorphism design system & CSS variables
-├── script.js           # Vanilla JS for IntersectionObserver fade-up, mobile nav & copy email
-├── assets/             # Directory for personal files
-│   ├── resume.pdf      # Place your PDF resume here
-│   └── README.md       # Assets guide
-└── README.md           # Documentation & deployment guide
+├── index.html          # Semantic HTML5 page structure with ARIA landmarks
+├── styles.css          # Monochromatic design system tokens & responsive layouts
+├── script.js           # Starfield canvas engine, scroll parallax, and interactive UI
+├── assets/             # Project screenshots & visual assets
+│   ├── dashcrate-preview.png
+│   ├── network-features.png
+│   ├── disease-heatmap.png
+│   └── resume.pdf
+└── README.md           # Project documentation
 ```
 
 ---
 
-## 🎨 Theme & Design Specs
+## ⚡ Quick Start (Local Development)
 
-- **Palette**: Monochromatic near-black `#0A0A0B` to subtle grey `#141416` gradient.
-- **Glassmorphism**: `rgba(255, 255, 255, 0.04)` cards with `backdrop-filter: blur(16px) saturate(140%)` and `1px solid rgba(255, 255, 255, 0.12)`.
-- **Glow & Interaction**: 250ms transition to white glow border (`rgba(255, 255, 255, 0.45)`) and 4px card lift on hover and focus.
-- **Background Depth**: Three large drifting radial gradients with 120px+ gaussian blur.
-- **Fallbacks**: Browser fallback (`@supports not (backdrop-filter)`) to solid dark panels, plus full `prefers-reduced-motion` compliance.
+Because this project relies strictly on native web technologies, no build tools or package managers are required.
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/srujangandla/portfolio.git
+cd portfolio
+```
+
+### 2. Run locally
+You can open `index.html` directly in any modern browser, or spin up a local preview server:
+
+**Using Python:**
+```bash
+python -m http.server 8000
+```
+Then visit `http://localhost:8000` in your browser.
+
+**Using Node.js (npx):**
+```bash
+npx serve .
+```
 
 ---
 
-## 📝 Placeholders to Replace
+## 🚀 Deployment (GitHub Pages)
 
-Before publishing your portfolio live, search for and update the following placeholders across `index.html` and the `assets/` folder:
+Yet to deploy
 
-| # | Placeholder | Location in `index.html` | Description |
-|---|---|---|---|
-| 1 | `[ONE LINE ABOUT ME]` | Line ~133 | A concise 1-line elevator pitch highlighting your specific AI/DS passion or focus area. |
-| 2 | `[REAL METRIC]` | Line ~230 | The measured benchmark/impact metric for **DashCrate** (e.g., latency reduction, NDCG score, token savings). |
-| 3 | `[F1 / AUC]` | Line ~277 | The exact classification accuracy, F1-score, or anomaly detection AUC for the **HAR** model. |
-| 4 | `[PROJECT 3 PLACEHOLDER]` | Line ~315 | The project title of your third portfolio project. |
-| 5 | `[1-2 LINE PROJECT DESCRIPTION PLACEHOLDER]` | Line ~317 | Brief summary of what your third project does. |
-| 6 | `[REAL METRIC]` | Line ~322 | The measured outcome or quantitative performance of your third project. |
-| 7 | `[TOOL / LIB 1]`, `[TOOL / LIB 2]`, `[TOOL / LIB 3]` | Lines ~326–328 | The technologies used in Project 3 (e.g., PyTorch, SQL, Scikit-learn). |
-| 8 | `[YOUR EMAIL]` | Lines ~434, 439 | Your contact email address (both in the visible text and the `mailto:` link). |
-| 9 | `assets/resume.pdf` | `assets/` folder | Add your actual resume PDF named `resume.pdf` inside `assets/`. |
-| 10 | Project Repo & Demo links | Lines ~200, 211, etc. | Update `href` attributes to point to the exact GitHub repository and live demo URLs for each project. |
-| 11 | `og-image.png` (Optional) | `assets/` folder | Social preview card image (1200×630px) referenced in Open Graph meta tags. |
+---
+
+## 📬 Contact & Profiles
+
+- **Name**: Srujan Gandla
+- **Institution**: Chaitanya Bharathi Institute of Technology (CBIT), Hyderabad
+- **Degree**: B.E. in Artificial Intelligence & Data Science
+- **GitHub**: [@srujangandla](https://github.com/srujangandla)
+- **LinkedIn**: [linkedin.com/in/srujangandla2504](https://www.linkedin.com/in/srujangandla2504/)
+- **Email**: [srujangandla2504@gmail.com](mailto:srujangandla2504@gmail.com)
