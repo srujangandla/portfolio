@@ -1,7 +1,6 @@
 /**
  * Portfolio JavaScript - Srujan
  * Features:
- * - Thin scroll-progress bar updating on scroll
  * - Sticky navbar shrinking & blur styling past 40px
  * - Cursor-following spotlight on glass cards (--mx, --my on fine pointer devices)
  * - IntersectionObserver fade-up animations (triggers once)
@@ -13,24 +12,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // ---------------------------------------------------------------------------
-  // 1. Thin Top Scroll Progress Bar
-  // ---------------------------------------------------------------------------
-  const scrollProgressBar = document.getElementById('scrollProgressBar');
-
-  const updateScrollProgress = () => {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    if (docHeight > 0 && scrollProgressBar) {
-      const scrollPercent = (scrollTop / docHeight) * 100;
-      scrollProgressBar.style.width = `${scrollPercent}%`;
-    }
-  };
-
-  window.addEventListener('scroll', updateScrollProgress, { passive: true });
-  updateScrollProgress();
-
-  // ---------------------------------------------------------------------------
-  // 2. Mobile Navigation Toggle & Accessibility
+  // 1. Mobile Navigation Toggle & Accessibility
   // ---------------------------------------------------------------------------
   const navToggle = document.getElementById('navToggle');
   const navMenu = document.getElementById('navMenu');

@@ -110,33 +110,25 @@ html {
   scroll-padding-top: calc(var(--nav-height) + 1.5rem);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Thin thematic scrollbar (Firefox) */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.22) #0A0A0B;
+  /* Completely hide scrollbar across all browsers while preserving scrollability */
+  scrollbar-width: none;              /* Firefox */
+  -ms-overflow-style: none;           /* IE & Edge */
 }
 
-/* Scrollbar styling to match black + grey theme (WebKit / Chrome / Safari / Edge) */
+/* Hide scrollbars completely (Chrome, Safari, Edge, WebKit) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar,
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0A0A0B;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.22);
-  border-radius: 4px;
-  border: 2px solid #0A0A0B;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.38);
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 body {
   min-height: 100vh;
+  scrollbar-width: none;              /* Firefox */
+  -ms-overflow-style: none;           /* IE & Edge */
   background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-gradient-end) 100%);
   background-attachment: fixed;
   color: var(--text-body);
@@ -206,23 +198,6 @@ button:focus-visible,
   outline: 2px solid rgba(255, 255, 255, 0.85) !important;
   outline-offset: 3px !important;
   box-shadow: 0 0 16px rgba(255, 255, 255, 0.35) !important;
-}
-
-/* ==========================================================================
-   SCROLL PROGRESS BAR
-   ========================================================================== */
-
-.scroll-progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 2px;
-  width: 0%;
-  background: var(--accent-white);
-  z-index: 99999;
-  pointer-events: none;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.85);
-  transition: width 40ms linear;
 }
 
 /* Page Content Layering (Sits above fixed starfield canvas) */
