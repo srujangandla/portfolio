@@ -18,9 +18,16 @@
   --text-body: #D4D4D8;               /* High-contrast neutral silver for body copy */
   --text-muted: #A1A1AA;              /* Muted grey (>4.5:1 contrast against dark background) */
 
-  /* Pure White Glow & Accent (No colour accents permitted) */
+  /* Pure White Glow & Primary Accent */
   --accent-white: #FFFFFF;
   --accent-hover: #F4F4F5;
+
+  /* Single Crimson Red Accent System */
+  --accent-crimson: #E63946;
+  --accent-crimson-text: #FF5A6E;
+  --accent-crimson-glow: rgba(230, 57, 70, 0.45);
+  --accent-crimson-subtle: rgba(230, 57, 70, 0.12);
+  --accent-crimson-border: rgba(230, 57, 70, 0.35);
 
   /* Space Background System Tokens (Customizable for tuning) */
   --nebula-opacity-min: 0.05;
@@ -1519,17 +1526,110 @@ main,
   }
 }
 
-@media (min-width: 1024px) {
-  .projects-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 .project-card {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+/* 16:9 Glass Preview Placeholder */
+.project-preview-placeholder {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+  transition: border-color var(--transition-speed) ease, background var(--transition-speed) ease;
+}
+
+.project-card:hover .project-preview-placeholder {
+  border-color: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.preview-placeholder-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 1rem;
+}
+
+.preview-placeholder-inner svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--text-muted);
+  opacity: 0.7;
+  transition: stroke var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.project-card:hover .preview-placeholder-inner svg {
+  stroke: var(--accent-white);
+  transform: scale(1.08);
+}
+
+.preview-placeholder-inner span {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Crimson Accent Badges & Highlights */
+.badge-crimson {
+  color: var(--accent-crimson-text);
+  background: var(--accent-crimson-subtle);
+  border: 1px solid var(--accent-crimson-border);
+  box-shadow: 0 0 10px var(--accent-crimson-subtle);
+}
+
+.project-header-badges {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.project-status-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+}
+
+.project-subtitle {
+  font-size: 0.885rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: -0.35rem;
+  margin-bottom: 0.85rem;
+  line-height: 1.4;
+}
+
+.project-meta-line {
+  font-size: 0.85rem;
+  color: var(--text-body);
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.project-meta-line strong {
+  color: var(--text-heading);
+  font-weight: 600;
 }
 
 /* 16:9 Glass Preview Placeholder with Subtle Grid */
@@ -1865,6 +1965,246 @@ main,
 
 .project-card:hover .stack-pill {
   border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* ==========================================================================
+   CERTIFICATIONS SECTION
+   ========================================================================== */
+
+.certifications-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .certifications-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .certifications-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.cert-card {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  position: relative;
+}
+
+.cert-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.cert-issuer {
+  font-size: 0.785rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-white);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border-subtle);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
+}
+
+.cert-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.cert-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+}
+
+.cert-detail {
+  font-size: 0.875rem;
+  color: var(--text-body);
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+  flex-grow: 1;
+}
+
+.cert-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  margin-bottom: 1.25rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.cert-id-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cert-id-code {
+  font-family: monospace;
+  font-size: 0.785rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border-subtle);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  color: var(--text-heading);
+}
+
+.cert-actions {
+  margin-top: auto;
+}
+
+.cert-btn {
+  width: 100%;
+  justify-content: center;
+  font-size: 0.875rem;
+  padding: 0.65rem 1rem;
+}
+
+.cert-card-template {
+  border-style: dashed;
+}
+
+/* ==========================================================================
+   ACHIEVEMENTS TIMELINE SECTION
+   ========================================================================== */
+
+.achievements-timeline-wrapper {
+  position: relative;
+  max-width: 860px;
+  margin: 0 auto;
+  padding-left: 2.25rem;
+}
+
+.timeline-track {
+  position: absolute;
+  top: 1.5rem;
+  bottom: 1.5rem;
+  left: 9px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent-crimson) 0%, rgba(230, 57, 70, 0.45) 75%, rgba(230, 57, 70, 0.05) 100%);
+}
+
+.timeline-entry {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.timeline-entry:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -2.25rem;
+  top: 1.5rem;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-crimson);
+  box-shadow: 0 0 10px var(--accent-crimson), 0 0 20px var(--accent-crimson-glow);
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.timeline-entry:hover .timeline-dot {
+  transform: scale(1.35);
+  box-shadow: 0 0 14px var(--accent-crimson), 0 0 28px var(--accent-crimson-glow);
+}
+
+.timeline-card {
+  padding: 1.5rem 1.75rem;
+  position: relative;
+}
+
+.timeline-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.timeline-date {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.timeline-badge {
+  font-size: 0.725rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+}
+
+.timeline-tag {
+  font-size: 0.725rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border-subtle);
+  color: var(--text-muted);
+}
+
+.timeline-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  line-height: 1.35;
+  margin-bottom: 0.45rem;
+}
+
+.timeline-impact {
+  font-size: 0.9rem;
+  color: var(--text-body);
+  line-height: 1.55;
+}
+
+@media (max-width: 600px) {
+  .achievements-timeline-wrapper {
+    padding-left: 1.5rem;
+  }
+  .timeline-track {
+    left: 5px;
+  }
+  .timeline-marker {
+    left: -1.5rem;
+  }
+  .timeline-card {
+    padding: 1.25rem;
+  }
 }
 
 /* ==========================================================================
@@ -2262,13 +2602,41 @@ main,
   transform: translateY(0);
 }
 
-/* Stagger delay utility for cards */
+/* Stagger delay utility for cards & timeline items */
 .projects-grid .fade-element:nth-child(2) {
   transition-delay: 80ms;
 }
 
 .projects-grid .fade-element:nth-child(3) {
   transition-delay: 160ms;
+}
+
+.projects-grid .fade-element:nth-child(4) {
+  transition-delay: 240ms;
+}
+
+.certifications-grid .fade-element:nth-child(2) {
+  transition-delay: 80ms;
+}
+
+.certifications-grid .fade-element:nth-child(3) {
+  transition-delay: 160ms;
+}
+
+.certifications-grid .fade-element:nth-child(4) {
+  transition-delay: 240ms;
+}
+
+.achievements-timeline-wrapper .fade-element:nth-child(2) {
+  transition-delay: 80ms;
+}
+
+.achievements-timeline-wrapper .fade-element:nth-child(3) {
+  transition-delay: 160ms;
+}
+
+.achievements-timeline-wrapper .fade-element:nth-child(4) {
+  transition-delay: 240ms;
 }
 
 .skills-bento-grid .fade-element:nth-child(2) {
@@ -2355,6 +2723,8 @@ main,
   .cb-row-arrow,
   .scroll-cue-chevron,
   .floating-back-to-top:hover,
+  .timeline-dot,
+  .timeline-entry:hover .timeline-dot,
   .btn-view-projects:hover .btn-arrow-down {
     transform: none !important;
     animation: none !important;

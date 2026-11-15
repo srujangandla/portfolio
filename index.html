@@ -107,8 +107,10 @@
       <!-- Navigation Links -->
       <nav aria-label="Main Navigation">
         <ul class="nav-links" id="navMenu">
-          <li><a href="#projects" class="nav-link">Projects</a></li>
           <li><a href="#skills" class="nav-link">Skills</a></li>
+          <li><a href="#projects" class="nav-link">Projects</a></li>
+          <li><a href="#certifications" class="nav-link">Certifications</a></li>
+          <li><a href="#achievements" class="nav-link">Achievements</a></li>
           <li><a href="#contact" class="nav-link">Contact</a></li>
         </ul>
       </nav>
@@ -260,118 +262,11 @@
       </div>
     </section>
 
-    <!-- Infinite Tech Marquee Section -->
-    <section class="marquee-section" aria-label="Technologies Marquee">
-      <div class="marquee-wrapper">
-        <div class="marquee-track">
-          <span class="marquee-item">Python</span>
-          <span class="marquee-item">SQL</span>
-          <span class="marquee-item">C++</span>
-          <span class="marquee-item">Machine Learning</span>
-          <span class="marquee-item">TensorFlow</span>
-          <span class="marquee-item">Keras</span>
-          <span class="marquee-item">scikit-learn</span>
-          <span class="marquee-item">DuckDB</span>
-          <span class="marquee-item">FastAPI</span>
-          <span class="marquee-item">PostgreSQL</span>
-          <span class="marquee-item">Power BI</span>
-          <span class="marquee-item">Streamlit</span>
-          <span class="marquee-item">Git</span>
-          <!-- Duplicate set for seamless looping marquee -->
-          <span class="marquee-item" aria-hidden="true">Python</span>
-          <span class="marquee-item" aria-hidden="true">SQL</span>
-          <span class="marquee-item" aria-hidden="true">C++</span>
-          <span class="marquee-item" aria-hidden="true">Machine Learning</span>
-          <span class="marquee-item" aria-hidden="true">TensorFlow</span>
-          <span class="marquee-item" aria-hidden="true">Keras</span>
-          <span class="marquee-item" aria-hidden="true">scikit-learn</span>
-          <span class="marquee-item" aria-hidden="true">DuckDB</span>
-          <span class="marquee-item" aria-hidden="true">FastAPI</span>
-          <span class="marquee-item" aria-hidden="true">PostgreSQL</span>
-          <span class="marquee-item" aria-hidden="true">Power BI</span>
-          <span class="marquee-item" aria-hidden="true">Streamlit</span>
-          <span class="marquee-item" aria-hidden="true">Git</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="section-container">
-      <div class="section-header fade-element">
-        <span class="section-kicker">01 / Projects</span>
-        <h2 class="section-title">Projects</h2>
-        <p class="section-desc">Practical systems engineered for machine learning, analytical querying, and data
-          intelligence.</p>
-      </div>
-
-      <div class="projects-grid">
-        <!-- Card 1 (Slot 1: Network Service Availability Prediction) -->
-        <article class="project-card glass reveal glass-card fade-element" id="project-network-telemetry">
-          <div class="project-preview">
-            <img class="project-preview-img pos-center" src="assets/network-features.png"
-              alt="Top 15 Random Forest Feature Importances for Network Service Availability Prediction" loading="lazy">
-          </div>
-          <span class="project-label">Telecom ML &amp; Telemetry</span>
-          <br>
-          <h3>Network Service Availability Prediction</h3>
-          <p class="project-desc">Machine learning framework for retrospective anomaly classification on 32,000
-            multi-dimensional telecom radio access network KPI time series.</p>
-          <p class="project-role"><strong>What I built:</strong> Feature extraction pipeline engineering 110
-            physical-layer KPI statistics (RSRP, UL_SNR, UL_BLER) and class-weighted Random Forest model.</p>
-          <p class="project-result"><strong>Result:</strong> F1 = 0.9577, Precision = 1.0000, False Alarm Rate = 0.0000,
-            Recall = 0.9189 on 32,000 trace windows (File: readme.md)</p>
-          <ul class="stack-pills">
-            <li>Python</li>
-            <li>scikit-learn</li>
-            <li>Pandas</li>
-            <li>NumPy</li>
-            <li>Matplotlib</li>
-            <li>Seaborn</li>
-          </ul>
-          <div class="project-links">
-            <a href="https://github.com/srujangandla/network-service-availability-prediction" target="_blank"
-              rel="noopener">Repo</a>
-          </div>
-        </article>
-
-        <!-- Card 2 (Slot 2: Disease Outbreak Prediction and Surge Analysis) -->
-        <article class="project-card glass reveal glass-card fade-element" id="project-disease-outbreak">
-          <div class="project-preview">
-            <img class="project-preview-img pos-center" src="assets/disease-heatmap.png"
-              alt="Correlation matrix of disease case predictors — log_cases, Deaths, Temp_C, precipitation, LAI, spatial and temporal features"
-              loading="lazy">
-          </div>
-          <span class="project-label">Epidemiological ML</span>
-          <br>
-          <h3>Disease Outbreak Prediction and Surge Analysis</h3>
-          <p class="project-desc">Predictive modeling pipeline in R analyzing 8,970 Indian district outbreak reports
-            with climate telemetry to identify case surge drivers.</p>
-          <p class="project-role"><strong>What I built:</strong> End-to-end R analytics pipeline, leakage-free temporal
-            validation splits (train 2009–2017, test 2018–2019, stress 2020–2022), Random Forest regression, and
-            Logistic surge classifier.</p>
-          <p class="project-result"><strong>Result:</strong> Random Forest RMSE = 0.95 (R² = 0.18 vs 0.00 baseline);
-            Logistic surge PR-AUC = 0.44 vs 0.22 baseline (File: README.md)</p>
-          <ul class="stack-pills">
-            <li>R</li>
-            <li>Random Forest</li>
-            <li>Logistic Regression</li>
-            <li>K-Means</li>
-            <li>Caret</li>
-            <li>ggplot2</li>
-          </ul>
-          <div class="project-links">
-            <a href="https://github.com/srujangandla/Disease-Outbreak-Prediction-and-Surge-Analysis" target="_blank"
-              rel="noopener">Repo</a>
-          </div>
-        </article>
-
-      </div>
-    </section>
 
     <!-- Skills Section -->
     <section id="skills" class="section-container">
       <div class="section-header fade-element">
-        <span class="section-kicker">02 / Skills</span>
+        <span class="section-kicker">01 / Skills</span>
         <h2 class="section-title">Skills</h2>
         <p class="section-desc">Foundational programming, machine learning tooling, and high-performance analytical
           stacks.</p>
@@ -455,13 +350,296 @@
       </div>
     </section>
 
+    <!-- Projects Section -->
+    <section id="projects" class="section-container">
+      <div class="section-header fade-element">
+        <span class="section-kicker">02 / Projects</span>
+        <h2 class="section-title">Projects</h2>
+        <p class="section-desc">Practical systems engineered for machine learning, analytical querying, and data
+          intelligence.</p>
+      </div>
+
+      <div class="projects-grid">
+
+        <!-- Card 2 (Slot 2: Network Service Availability Prediction) -->
+        <article class="project-card glass reveal glass-card fade-element" id="project-network-telemetry">
+          <div class="project-preview">
+            <img class="project-preview-img pos-center" src="assets/network-features.png"
+              alt="Top 15 Random Forest Feature Importances for Network Service Availability Prediction" loading="lazy">
+          </div>
+          <span class="project-label">Telecom ML &amp; Telemetry</span>
+          <br>
+          <h3>Network Service Availability Prediction</h3>
+          <p class="project-desc">Machine learning framework for retrospective anomaly classification on 32,000
+            multi-dimensional telecom radio access network KPI time series.</p>
+          <p class="project-role"><strong>What I built:</strong> Feature extraction pipeline engineering 110
+            physical-layer KPI statistics (RSRP, UL_SNR, UL_BLER) and class-weighted Random Forest model.</p>
+          <p class="project-result"><strong>Result:</strong> F1 = 0.9577, Precision = 1.0000, False Alarm Rate = 0.0000,
+            Recall = 0.9189 on 32,000 trace windows (File: readme.md)</p>
+          <ul class="stack-pills">
+            <li>Python</li>
+            <li>scikit-learn</li>
+            <li>Pandas</li>
+            <li>NumPy</li>
+            <li>Matplotlib</li>
+            <li>Seaborn</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/srujangandla/network-service-availability-prediction" target="_blank"
+              rel="noopener noreferrer">Repo</a>
+          </div>
+        </article>
+
+        <!-- Card 3 (Slot 3: Disease Outbreak Prediction and Surge Analysis) -->
+        <article class="project-card glass reveal glass-card fade-element" id="project-disease-outbreak">
+          <div class="project-preview">
+            <img class="project-preview-img pos-center" src="assets/disease-heatmap.png"
+              alt="Correlation matrix of disease case predictors — log_cases, Deaths, Temp_C, precipitation, LAI, spatial and temporal features"
+              loading="lazy">
+          </div>
+          <span class="project-label">Epidemiological ML</span>
+          <br>
+          <h3>Disease Outbreak Prediction and Surge Analysis</h3>
+          <p class="project-desc">Predictive modeling pipeline in R analyzing 8,970 Indian district outbreak reports
+            with climate telemetry to identify case surge drivers.</p>
+          <p class="project-role"><strong>What I built:</strong> End-to-end R analytics pipeline, leakage-free temporal
+            validation splits (train 2009–2017, test 2018–2019, stress 2020–2022), Random Forest regression, and
+            Logistic surge classifier.</p>
+          <p class="project-result"><strong>Result:</strong> Random Forest RMSE = 0.95 (R² = 0.18 vs 0.00 baseline);
+            Logistic surge PR-AUC = 0.44 vs 0.22 baseline (File: README.md)</p>
+          <ul class="stack-pills">
+            <li>R</li>
+            <li>Random Forest</li>
+            <li>Logistic Regression</li>
+            <li>K-Means</li>
+            <li>Caret</li>
+            <li>ggplot2</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/srujangandla/Disease-Outbreak-Prediction-and-Surge-Analysis" target="_blank"
+              rel="noopener noreferrer">Repo</a>
+          </div>
+        </article>
+
+        <!-- Card 4 (Slot 4: Human Activity Recognition & Anomaly Detection) -->
+        <article class="project-card glass reveal glass-card fade-element" id="project-har-anomaly">
+          <div class="project-preview-placeholder">
+            <div class="preview-placeholder-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <span>Screenshot Placeholder (Confusion Matrix / Dashboard)</span>
+            </div>
+          </div>
+          <div class="project-header-badges">
+            <span class="project-label">Deep Learning &amp; Wearables</span>
+            <span class="project-status-badge badge-crimson">Status: Research Capstone</span>
+          </div>
+          <h3>Real-Time Human Activity Recognition &amp; Anomaly Detection</h3>
+          <p class="project-subtitle">Deep Neural Networks on wearable sensor data</p>
+          <p class="project-desc">Two separate deep-learning systems built on wearable accelerometer and gyroscope data.
+            A 1D CNN classifies everyday activities (walking, sitting, standing, jogging, stairs). A separate
+            autoencoder, trained only on normal movement, flags falls as anomalies through reconstruction error. Sensor
+            streams are cut into time windows and fed one window at a time to simulate real-time wearable inference.</p>
+          <p class="project-meta-line"><strong>Datasets:</strong> PAMAP2 (activity classification) &amp; SisFall
+            (fall/anomaly detection)</p>
+          <p class="project-meta-line"><strong>Metrics evaluated:</strong> Accuracy, Precision, Recall, F1, AUC,
+            Confusion Matrix, Inference Time</p>
+          <!-- replace with real notebook results -->
+          <p class="project-result"><strong>Result:</strong> Accuracy: [FILL IN]% &nbsp;|&nbsp; F1: [FILL IN]
+            &nbsp;|&nbsp; Fall-detection AUC: [FILL IN]</p>
+          <ul class="stack-pills">
+            <li>Python</li>
+            <li>TensorFlow/Keras</li>
+            <li>NumPy</li>
+            <li>Pandas</li>
+            <li>scikit-learn</li>
+            <li>Streamlit</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/srujangandla/[REPO-NAME]" target="_blank" rel="noopener noreferrer">View on
+              GitHub</a>
+            <a href="#" target="_blank" rel="noopener noreferrer" style="display: none;">Live Demo</a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Certifications Section -->
+    <section id="certifications" class="section-container">
+      <div class="section-header fade-element">
+        <span class="section-kicker">03 / Certifications</span>
+        <h2 class="section-title">Certifications</h2>
+        <p class="section-desc">Industry-standard credentials, formal training programs, and practical domain
+          qualifications.</p>
+      </div>
+
+      <div class="certifications-grid">
+        <!-- Card 1 (Active Credential) -->
+        <article class="glass-card cert-card fade-element">
+          <div class="cert-card-header">
+            <span class="cert-issuer">Thiranex EduTech LLP</span>
+            <span class="cert-date">24 Jul 2026 – 23 Aug 2026</span>
+          </div>
+          <h3 class="cert-title">Data Science Internship Certificate</h3>
+          <p class="cert-detail">4 tasks completed on time: Data Cleaning &amp; Visualization, Predictive Modeling with
+            ML, EDA, Real-world Data Project.</p>
+          <div class="cert-meta">
+            <span class="cert-id-label">Credential ID:</span>
+            <span class="cert-id-code">THX-JUL2426-376</span>
+          </div>
+          <div class="cert-actions">
+            <a href="[CERTIFICATE URL / PDF PATH]" target="_blank" rel="noopener noreferrer"
+              class="btn btn-glass cert-btn">View Certificate</a>
+          </div>
+        </article>
+
+        <!-- Duplicate this card to add more certifications -->
+        <article class="glass-card cert-card cert-card-template fade-element">
+          <div class="cert-card-header">
+            <span class="cert-issuer">[ISSUER, e.g. Coursera / DeepLearning.AI / AWS]</span>
+            <span class="cert-date">[MONTH YEAR]</span>
+          </div>
+          <h3 class="cert-title">[CERTIFICATE NAME]</h3>
+          <p class="cert-detail">[Specialization focus, key architectures mastered, or core applied capabilities
+            verified.]</p>
+          <div class="cert-meta">
+            <span class="cert-id-label">Credential ID:</span>
+            <span class="cert-id-code">[ID]</span>
+          </div>
+          <div class="cert-actions">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-glass cert-btn">View Certificate</a>
+          </div>
+        </article>
+
+        <!-- Duplicate this card to add more certifications -->
+        <article class="glass-card cert-card cert-card-template fade-element">
+          <div class="cert-card-header">
+            <span class="cert-issuer">[ISSUER, e.g. Google Cloud / NVIDIA / IBM]</span>
+            <span class="cert-date">[MONTH YEAR]</span>
+          </div>
+          <h3 class="cert-title">[CERTIFICATE NAME]</h3>
+          <p class="cert-detail">[Specialization focus, key architectures mastered, or core applied capabilities
+            verified.]</p>
+          <div class="cert-meta">
+            <span class="cert-id-label">Credential ID:</span>
+            <span class="cert-id-code">[ID]</span>
+          </div>
+          <div class="cert-actions">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-glass cert-btn">View Certificate</a>
+          </div>
+        </article>
+
+        <!-- Duplicate this card to add more certifications -->
+        <article class="glass-card cert-card cert-card-template fade-element">
+          <div class="cert-card-header">
+            <span class="cert-issuer">[ISSUER, e.g. Stanford Online / Databricks]</span>
+            <span class="cert-date">[MONTH YEAR]</span>
+          </div>
+          <h3 class="cert-title">[CERTIFICATE NAME]</h3>
+          <p class="cert-detail">[Specialization focus, key architectures mastered, or core applied capabilities
+            verified.]</p>
+          <div class="cert-meta">
+            <span class="cert-id-label">Credential ID:</span>
+            <span class="cert-id-code">[ID]</span>
+          </div>
+          <div class="cert-actions">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-glass cert-btn">View Certificate</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section id="achievements" class="section-container">
+      <div class="section-header fade-element">
+        <span class="section-kicker">04 / Achievements</span>
+        <h2 class="section-title">Achievements</h2>
+        <p class="section-desc">Key milestones across applied research, hackathons, academic standing, and open-source
+          contributions.</p>
+      </div>
+
+      <div class="achievements-timeline-wrapper">
+        <div class="timeline-track" aria-hidden="true"></div>
+
+        <!-- Entry 1 (Research Capstone - In Preparation) -->
+        <div class="timeline-entry fade-element">
+          <div class="timeline-marker" aria-hidden="true">
+            <span class="timeline-dot"></span>
+          </div>
+          <article class="glass-card timeline-card">
+            <div class="timeline-card-header">
+              <span class="timeline-date">2026</span>
+              <span class="timeline-badge badge-crimson">Research | In preparation</span>
+            </div>
+            <h3 class="timeline-title">Journal-style manuscript in preparation: Real-Time Human Activity Recognition and
+              Anomaly Detection</h3>
+            <p class="timeline-impact">Working on an academic-format paper covering the PAMAP2 + SisFall dual-pipeline
+              architecture (1D CNN + Autoencoder), windowing strategies for wearable inference, and fall-detection
+              evaluation against baseline classifiers. Target submission to an applied ML/IoT venue.</p>
+          </article>
+        </div>
+
+        <!-- Duplicate this entry to add more achievements -->
+        <div class="timeline-entry fade-element">
+          <div class="timeline-marker" aria-hidden="true">
+            <span class="timeline-dot"></span>
+          </div>
+          <article class="glass-card timeline-card">
+            <div class="timeline-card-header">
+              <span class="timeline-date">[MONTH YEAR]</span>
+              <span class="timeline-tag">Hackathon / Competition</span>
+            </div>
+            <h3 class="timeline-title">[HACKATHON / COMPETITION TITLE]</h3>
+            <p class="timeline-impact">[What I did and the measurable result, e.g. Top 5 out of 120 teams for real-time
+              edge vision model]</p>
+          </article>
+        </div>
+
+        <!-- Duplicate this entry to add more achievements -->
+        <div class="timeline-entry fade-element">
+          <div class="timeline-marker" aria-hidden="true">
+            <span class="timeline-dot"></span>
+          </div>
+          <article class="glass-card timeline-card">
+            <div class="timeline-card-header">
+              <span class="timeline-date">[MONTH YEAR]</span>
+              <span class="timeline-tag">Academic Honors</span>
+            </div>
+            <h3 class="timeline-title">[ACADEMIC / MERIT AWARD]</h3>
+            <p class="timeline-impact">[Brief detail, e.g. Department Rank / Merit Scholarship / Dean's Honor List]</p>
+          </article>
+        </div>
+
+        <!-- Duplicate this entry to add more achievements -->
+        <div class="timeline-entry fade-element">
+          <div class="timeline-marker" aria-hidden="true">
+            <span class="timeline-dot"></span>
+          </div>
+          <article class="glass-card timeline-card">
+            <div class="timeline-card-header">
+              <span class="timeline-date">[MONTH YEAR]</span>
+              <span class="timeline-tag">Open Source / Talk</span>
+            </div>
+            <h3 class="timeline-title">[OPEN SOURCE / TALK / OTHER]</h3>
+            <p class="timeline-impact">[Brief detail on core contributions, technical community talks, or open source
+              tooling impact]</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="section-container">
       <div class="fade-element">
         <div class="glass-card contact-card" id="contact-panel">
 
           <div class="contact-header">
-            <span class="section-kicker contact-kicker">03 / Contact</span>
+            <span class="section-kicker contact-kicker">05 / Contact</span>
             <div class="contact-status-wrapper">
               <span class="status-pill contact-status">
                 <span class="status-pulse" aria-hidden="true"></span>
