@@ -132,6 +132,11 @@ body::-webkit-scrollbar,
   height: 0 !important;
 }
 
+/* Ensure elements with hidden attribute are strictly not rendered */
+[hidden] {
+  display: none !important;
+}
+
 body {
   min-height: 100vh;
   scrollbar-width: none;              /* Firefox */
@@ -1107,6 +1112,56 @@ main,
   font-weight: 500;
 }
 
+/* Compact Glass Stat Strip (Hero) */
+.hero-stat-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .hero-stat-strip {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+}
+
+.stat-card {
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  transition: transform var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--glow-border);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+.stat-number {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.stat-label {
+  font-size: 0.775rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  font-weight: 500;
+}
+
 /* ==========================================================================
    SPACE VISUAL FEATURES: HERO RINGED PLANET, MOON & DISTANT GALAXY
    Pure CSS & Inline SVG — Transform-only animations
@@ -1511,6 +1566,48 @@ main,
 }
 
 /* ==========================================================================
+   ABOUT SECTION
+   ========================================================================== */
+
+.about-card {
+  padding: clamp(1.75rem, 3.5vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.about-lead {
+  font-size: clamp(1rem, 1.25vw, 1.125rem);
+  line-height: 1.7;
+  color: var(--text-body);
+}
+
+.about-current {
+  font-size: 0.925rem;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--glass-border-subtle);
+}
+
+.about-current strong {
+  color: var(--text-heading);
+  font-weight: 600;
+}
+
+.about-current-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-crimson);
+  box-shadow: 0 0 10px var(--accent-crimson), 0 0 16px var(--accent-crimson-glow);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
    PROJECTS SECTION
    ========================================================================== */
 
@@ -1765,6 +1862,46 @@ main,
 .project-role strong {
   color: var(--text-heading);
   font-weight: 600;
+}
+
+/* Problem / Solution / Impact Structured Details */
+.project-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1.15rem;
+  flex-grow: 1;
+}
+
+.project-psi {
+  font-size: 0.885rem;
+  line-height: 1.55;
+  color: var(--text-body);
+}
+
+.project-psi strong {
+  color: var(--text-heading);
+  font-weight: 700;
+  margin-right: 0.35rem;
+}
+
+.project-psi.project-impact {
+  color: var(--accent-white);
+}
+
+.project-status-line {
+  font-size: 0.825rem;
+  color: var(--accent-crimson-text);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.4rem 0.75rem;
+  background: var(--accent-crimson-subtle);
+  border: 1px solid var(--accent-crimson-border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .project-preview {
@@ -2211,6 +2348,41 @@ main,
    SKILLS SECTION (Compact Bento Layout: 1 Large + 2 Small)
    ========================================================================== */
 
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .skills-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .skills-grid .skill-panel:nth-child(1),
+  .skills-grid .skill-panel:nth-child(2) {
+    grid-column: span 3;
+  }
+
+  .skills-grid .skill-panel:nth-child(3),
+  .skills-grid .skill-panel:nth-child(4),
+  .skills-grid .skill-panel:nth-child(5) {
+    grid-column: span 2;
+  }
+}
+
+.skills-grid .skill-panel {
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
 .skills-bento-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -2644,6 +2816,30 @@ main,
 }
 
 .skills-bento-grid .fade-element:nth-child(3) {
+  transition-delay: 160ms;
+}
+
+.skills-grid .fade-element:nth-child(2) {
+  transition-delay: 80ms;
+}
+
+.skills-grid .fade-element:nth-child(3) {
+  transition-delay: 160ms;
+}
+
+.skills-grid .fade-element:nth-child(4) {
+  transition-delay: 240ms;
+}
+
+.skills-grid .fade-element:nth-child(5) {
+  transition-delay: 320ms;
+}
+
+.experience-timeline-wrapper .fade-element:nth-child(2) {
+  transition-delay: 80ms;
+}
+
+.experience-timeline-wrapper .fade-element:nth-child(3) {
   transition-delay: 160ms;
 }
 

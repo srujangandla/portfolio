@@ -40,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Close mobile menu when any nav item is clicked
-    navLinks.forEach(link => {
+    const allMenuLinks = navMenu.querySelectorAll('a');
+    allMenuLinks.forEach(link => {
       link.addEventListener('click', () => {
         closeMenu();
       });
@@ -133,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---------------------------------------------------------------------------
   // 6. Active Section Highlighting in Navbar (IntersectionObserver)
   // ---------------------------------------------------------------------------
-  const trackedSections = document.querySelectorAll('section[id]');
+  const trackedSections = document.querySelectorAll('section[id]:not([hidden])');
   const allNavLinks = document.querySelectorAll('.nav-link');
 
   if ('IntersectionObserver' in window) {
