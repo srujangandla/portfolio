@@ -431,7 +431,8 @@ function initStarfield() {
 
     // Adaptive Performance Check
     quality: {
-      benchmarkDuration: 2000, // first 2 seconds
+      warmupGracePeriod: 1500, // 1.5s grace period to ignore initial page hydration/parsing lag
+      benchmarkDuration: 2500, // sample over 2.5 seconds after warm-up
       fpsThreshold: 45,        // fps cut-off
       degradeStarReduction: 0.40 // 40% star reduction
     }
@@ -444,6 +445,7 @@ function initStarfield() {
   let height = 0;
   let dpr = 1;
   let stars = [];
+  let starsByLayer = [[], [], [], []];
   let bokehCircles = [];
   let activeShootingStars = [];
   let nextShootingStarTime = performance.now() + randomRange(CONFIG.shootingStars.intervalMin, CONFIG.shootingStars.intervalMax);
@@ -451,6 +453,7 @@ function initStarfield() {
   let animationFrameId = null;
   let lastTime = 0;
   let isRunning = false;
+  let isCanvasInView = true;
 
   // Track scroll position & velocity
   let scrollY = window.scrollY || document.documentElement.scrollTop;
@@ -470,7 +473,16 @@ function initStarfield() {
   let lastMouseMoveTime = 0;
   let constellationAlpha = 0;
 
+  // Reusable object pool for near stars to avoid per-frame allocations during constellations
+  const nearStarPool = [];
+  const MAX_NEAR_STARS = 60;
+  for (let k = 0; k < MAX_NEAR_STARS; k++) {
+    nearStarPool.push({ screenX: 0, screenY: 0 });
+  }
+  let nearStarCount = 0;
+
   // Adaptive Quality Metrics
+  let warmupStart = 0;
   let benchmarkStart = 0;
   let benchmarkFrames = 0;
   let qualityBenchmarkDone = false;
@@ -501,6 +513,44 @@ function initStarfield() {
   bokehGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
   bokehCtx.fillStyle = bokehGrad;
   bokehCtx.fillRect(0, 0, 96, 96);
+
+  // Pre-render Offscreen Circular Star Dot Sprites (5 discrete sizes)
+  const starDotSprites = [];
+  const STAR_DOT_SIZES = [0.5, 0.8, 1.2, 1.8, 2.4];
+  for (let sIdx = 0; sIdx < STAR_DOT_SIZES.length; sIdx++) {
+    const r = STAR_DOT_SIZES[sIdx];
+    const dotCanvas = document.createElement('canvas');
+    const dotDim = Math.ceil((r + 1) * 2);
+    dotCanvas.width = dotDim;
+    dotCanvas.height = dotDim;
+    const dotCtx = dotCanvas.getContext('2d');
+    dotCtx.fillStyle = '#ffffff';
+    dotCtx.beginPath();
+    dotCtx.arc(dotDim / 2, dotDim / 2, r, 0, Math.PI * 2);
+    dotCtx.fill();
+    starDotSprites.push({ radius: r, canvas: dotCanvas, dim: dotDim });
+  }
+
+  // Pre-render Shooting Star Gradient Sprite (normalized horizontal 200x6)
+  const shootingStarSprite = document.createElement('canvas');
+  shootingStarSprite.width = 200;
+  shootingStarSprite.height = 8;
+  const ssCtx = shootingStarSprite.getContext('2d');
+  const ssGrad = ssCtx.createLinearGradient(0, 0, 200, 0);
+  ssGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+  ssGrad.addColorStop(0.7, 'rgba(255, 255, 255, 0.45)');
+  ssGrad.addColorStop(1, 'rgba(255, 255, 255, 0.95)');
+  ssCtx.strokeStyle = ssGrad;
+  ssCtx.lineWidth = 1.6;
+  ssCtx.lineCap = 'round';
+  ssCtx.beginPath();
+  ssCtx.moveTo(2, 4);
+  ssCtx.lineTo(196, 4);
+  ssCtx.stroke();
+  ssCtx.fillStyle = '#ffffff';
+  ssCtx.beginPath();
+  ssCtx.arc(196, 4, 1.5, 0, Math.PI * 2);
+  ssCtx.fill();
 
   // Scroll handler tracking velocity
   const onScroll = () => {
@@ -538,13 +588,25 @@ function initStarfield() {
   // Populate Stars & Bokeh
   function createUniverse() {
     stars = [];
+    starsByLayer = [[], [], [], []];
     bokehCircles = [];
 
     const isMobile = width < CONFIG.mobileBreakpoint;
     const area = width * height;
+
+    // Scale initial particle density according to hardware concurrency to avoid startup lag
+    const concurrency = navigator.hardwareConcurrency || 4;
+    let concurrencyScale = 1.0;
+    if (concurrency <= 2) {
+      concurrencyScale = 0.55;
+    } else if (concurrency <= 4) {
+      concurrencyScale = 0.80;
+    }
+
+    const maxStars = Math.round((isMobile ? CONFIG.maxStarsMobile : CONFIG.maxStarsDesktop) * concurrencyScale);
     const targetCount = Math.min(
-      Math.floor(area / CONFIG.areaPerStar),
-      isMobile ? CONFIG.maxStarsMobile : CONFIG.maxStarsDesktop
+      Math.floor(area / (CONFIG.areaPerStar / concurrencyScale)),
+      maxStars
     );
 
     // Populate stars by 4 depth layers
@@ -553,11 +615,24 @@ function initStarfield() {
       for (let i = 0; i < layerCount; i++) {
         const speed = randomRange(layer.speedMin, layer.speedMax);
         const isBright = Math.random() < CONFIG.twinkle.brightRatio;
+        const radius = randomRange(layer.radiusMin, layer.radiusMax);
 
-        stars.push({
+        // Find nearest pre-rendered dot sprite
+        let bestSprite = starDotSprites[0];
+        let minDiff = Math.abs(radius - bestSprite.radius);
+        for (let s = 1; s < starDotSprites.length; s++) {
+          const diff = Math.abs(radius - starDotSprites[s].radius);
+          if (diff < minDiff) {
+            minDiff = diff;
+            bestSprite = starDotSprites[s];
+          }
+        }
+
+        const star = {
           x: Math.random() * width,
           y: Math.random() * height,
-          radius: randomRange(layer.radiusMin, layer.radiusMax),
+          radius,
+          dotSprite: bestSprite,
           baseOpacity: randomRange(layer.opacityMin, layer.opacityMax),
           layerIndex: layerIdx,
           speedX: Math.cos(layer.driftAngle) * speed,
@@ -571,7 +646,10 @@ function initStarfield() {
           dispY: 0,
           targetDispX: 0,
           targetDispY: 0
-        });
+        };
+
+        stars.push(star);
+        starsByLayer[layerIdx].push(star);
       }
     });
 
@@ -594,11 +672,11 @@ function initStarfield() {
     }
   }
 
-  // Canvas Resize Handler
+  // Canvas Resize Handler (Cap DPR at 1.5 to protect fill-rate on high-DPI displays)
   function resizeCanvas() {
     width = window.innerWidth;
     height = window.innerHeight;
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
 
     canvas.width = Math.floor(width * dpr);
     canvas.height = Math.floor(height * dpr);
@@ -642,7 +720,7 @@ function initStarfield() {
     nextShootingStarTime = now + randomRange(CONFIG.shootingStars.intervalMin, CONFIG.shootingStars.intervalMax);
   }
 
-  // Render Shooting Stars
+  // Render Shooting Stars with Pre-rendered Sprite
   function renderShootingStars(now) {
     if (!CONFIG.shootingStars.enabled) return;
 
@@ -665,8 +743,6 @@ function initStarfield() {
       const dist = (elapsed / 1000) * star.speed;
       const headX = star.startX + Math.cos(star.angle) * dist;
       const headY = star.startY + Math.sin(star.angle) * dist;
-      const tailX = headX - Math.cos(star.angle) * star.length;
-      const tailY = headY - Math.sin(star.angle) * star.length;
 
       let alpha = 1;
       if (progress < 0.2) {
@@ -676,31 +752,22 @@ function initStarfield() {
       }
       alpha = Math.max(0, Math.min(1, alpha));
 
-      const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
-      grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-      grad.addColorStop(0.7, `rgba(255, 255, 255, ${(alpha * 0.45).toFixed(3)})`);
-      grad.addColorStop(1, `rgba(255, 255, 255, ${(alpha * 0.95).toFixed(3)})`);
-
+      // Draw transformed offscreen sprite
       ctx.save();
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = 1.3;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(tailX, tailY);
-      ctx.lineTo(headX, headY);
-      ctx.stroke();
-
-      ctx.fillStyle = `rgba(255, 255, 255, ${(alpha * 0.98).toFixed(3)})`;
-      ctx.beginPath();
-      ctx.arc(headX, headY, 1.4, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.translate(headX, headY);
+      ctx.rotate(star.angle);
+      ctx.globalAlpha = alpha;
+      // Draw 200px sprite mapped to star.length
+      const scaleX = star.length / 200;
+      ctx.scale(scaleX, 1);
+      ctx.drawImage(shootingStarSprite, -196, -4);
       ctx.restore();
     }
   }
 
-  // Draw Subtle Constellation Lines between Near Stars
-  function renderConstellationLines(nearStars) {
-    if (!CONFIG.constellations.enabled || nearStars.length < 2 || constellationAlpha < 0.02) return;
+  // Draw Subtle Constellation Lines between Near Stars (Using pre-allocated coordinates)
+  function renderConstellationLines() {
+    if (!CONFIG.constellations.enabled || nearStarCount < 2 || constellationAlpha < 0.02) return;
 
     ctx.save();
     ctx.lineWidth = 1;
@@ -709,23 +776,26 @@ function initStarfield() {
     let linesDrawn = 0;
     const maxLines = CONFIG.constellations.maxLines;
     const maxDist = CONFIG.constellations.maxDistance;
+    const maxDistSq = maxDist * maxDist;
 
-    for (let i = 0; i < nearStars.length && linesDrawn < maxLines; i++) {
-      const s1 = nearStars[i];
-      for (let j = i + 1; j < nearStars.length && linesDrawn < maxLines; j++) {
-        const s2 = nearStars[j];
+    ctx.beginPath();
+    for (let i = 0; i < nearStarCount && linesDrawn < maxLines; i++) {
+      const s1 = nearStarPool[i];
+      for (let j = i + 1; j < nearStarCount && linesDrawn < maxLines; j++) {
+        const s2 = nearStarPool[j];
         const dx = s1.screenX - s2.screenX;
         const dy = s1.screenY - s2.screenY;
-        const dist = Math.hypot(dx, dy);
+        const distSq = dx * dx + dy * dy;
 
-        if (dist < maxDist) {
-          ctx.beginPath();
+        if (distSq < maxDistSq) {
           ctx.moveTo(s1.screenX, s1.screenY);
           ctx.lineTo(s2.screenX, s2.screenY);
-          ctx.stroke();
           linesDrawn++;
         }
       }
+    }
+    if (linesDrawn > 0) {
+      ctx.stroke();
     }
     ctx.restore();
   }
@@ -751,9 +821,19 @@ function initStarfield() {
     });
   }
 
-  // Adaptive Quality Benchmark Check
+  // Adaptive Quality Benchmark Check with Warmup Grace Period
   function evaluateQuality(currentTime) {
     if (qualityBenchmarkDone) return;
+
+    // Grace period to allow page hydration, layout, and style calculations to finish
+    if (!warmupStart) {
+      warmupStart = currentTime;
+      return;
+    }
+    if (currentTime - warmupStart < CONFIG.quality.warmupGracePeriod) {
+      return;
+    }
+
     if (!benchmarkStart) {
       benchmarkStart = currentTime;
       benchmarkFrames = 0;
@@ -770,6 +850,11 @@ function initStarfield() {
         console.warn(`[Starfield] Average FPS ${fps.toFixed(1)} < ${CONFIG.quality.fpsThreshold}. Adapting quality.`);
         const removeCount = Math.floor(stars.length * CONFIG.quality.degradeStarReduction);
         stars.splice(0, removeCount);
+        // Resync starsByLayer
+        starsByLayer = [[], [], [], []];
+        for (let i = 0; i < stars.length; i++) {
+          starsByLayer[stars[i].layerIndex].push(stars[i]);
+        }
         CONFIG.bokeh.enabled = false;
         CONFIG.constellations.enabled = false;
       }
@@ -813,19 +898,18 @@ function initStarfield() {
       constellationAlpha = Math.max(0, constellationAlpha - dt * 3.5);
     }
 
-    const nearStarsForConstellations = [];
+    nearStarCount = 0;
 
-    // Draw Stars Grouped by 4 Layers
+    // Draw Stars Grouped by 4 Pre-partitioned Layers
     for (let layerIdx = 0; layerIdx < CONFIG.layers.length; layerIdx++) {
       const layer = CONFIG.layers[layerIdx];
-      const layerStars = stars.filter(s => s.layerIndex === layerIdx);
+      const layerStars = starsByLayer[layerIdx];
+      if (!layerStars || layerStars.length === 0) continue;
 
       // Mouse parallax shift opposite to cursor
       const mouseOffsetX = isFinePointer ? -currentMouseX * layer.parallaxMouse : 0;
       const mouseOffsetY = isFinePointer ? -currentMouseY * layer.parallaxMouse : 0;
       const scrollOffsetY = scrollY * layer.parallaxScroll;
-
-      ctx.save();
 
       for (let i = 0; i < layerStars.length; i++) {
         const star = layerStars[i];
@@ -878,9 +962,11 @@ function initStarfield() {
           drawY += star.dispY;
         }
 
-        // Collect near stars for constellation lines
-        if ((layerIdx === 2 || layerIdx === 3) && constellationAlpha > 0.02) {
-          nearStarsForConstellations.push({ screenX: drawX, screenY: drawY });
+        // Collect near stars for constellation lines using reusable pool
+        if ((layerIdx === 2 || layerIdx === 3) && constellationAlpha > 0.02 && nearStarCount < MAX_NEAR_STARS) {
+          nearStarPool[nearStarCount].screenX = drawX;
+          nearStarPool[nearStarCount].screenY = drawY;
+          nearStarCount++;
         }
 
         // Twinkle factor
@@ -891,13 +977,11 @@ function initStarfield() {
         // Draw Layer 4 Glow Sprite
         if (layer.hasGlow) {
           const glowSize = star.radius * 7;
-          ctx.globalAlpha = (currentOpacity * 0.75);
+          ctx.globalAlpha = currentOpacity * 0.75;
           ctx.drawImage(glowSpriteCanvas, drawX - glowSize / 2, drawY - glowSize / 2, glowSize, glowSize);
-          ctx.globalAlpha = 1.0;
         }
 
-        // Draw Star with Scroll Warp
-        ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity.toFixed(3)})`;
+        // Draw Star with Scroll Warp or Fast Dot Sprite
         if (currentWarpStreak > 0.5) {
           ctx.lineWidth = star.radius * 2;
           ctx.strokeStyle = `rgba(255, 255, 255, ${currentOpacity.toFixed(3)})`;
@@ -907,17 +991,17 @@ function initStarfield() {
           ctx.lineTo(drawX, drawY + currentWarpStreak * 0.5);
           ctx.stroke();
         } else {
-          ctx.beginPath();
-          ctx.arc(drawX, drawY, star.radius, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.globalAlpha = currentOpacity;
+          const sprite = star.dotSprite;
+          const halfDim = sprite.dim / 2;
+          ctx.drawImage(sprite.canvas, drawX - halfDim, drawY - halfDim);
         }
       }
-
-      ctx.restore();
     }
+    ctx.globalAlpha = 1.0;
 
     // Render Constellation Lines
-    renderConstellationLines(nearStarsForConstellations);
+    renderConstellationLines();
 
     // Render Depth-of-Field Bokeh Foreground Circles
     if (CONFIG.bokeh.enabled && bokehCircles.length > 0) {
@@ -978,17 +1062,34 @@ function initStarfield() {
     }
   }
 
-  // Handle visibility change (pause loop when tab hidden)
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      stopLoop();
-    } else {
-      const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!motionReduced) {
-        startLoop();
+    // Handle visibility change (pause loop when tab hidden)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopLoop();
+      } else {
+        const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!motionReduced && isCanvasInView) {
+          startLoop();
+        }
       }
+    });
+
+    // Pause RAF loop when canvas is off-screen using IntersectionObserver
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        const entry = entries[0];
+        isCanvasInView = entry.isIntersecting;
+        if (!isCanvasInView) {
+          stopLoop();
+        } else if (!document.hidden) {
+          const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (!motionReduced) {
+            startLoop();
+          }
+        }
+      }, { threshold: 0.01 });
+      observer.observe(canvas);
     }
-  });
 
   // Handle prefers-reduced-motion dynamically
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');

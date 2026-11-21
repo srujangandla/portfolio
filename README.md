@@ -1,19 +1,24 @@
 # Srujan Gandla — Portfolio
 
-[![Live Site](https://img.shields.io/badge/Live%20Site-Yet%20to%20Deploy-lightgrey)](#)
+[![Live Site](https://img.shields.io/badge/Live%20Site-srujangandla.vercel.app-brightgreen?style=flat-square&logo=vercel)](https://srujangandla.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gray?style=flat-square)](LICENSE)
 [![Tech](https://img.shields.io/badge/Built_With-HTML5_|_CSS3_|_Vanilla_JS-white?style=flat-square)](https://github.com/srujangandla)
 
-A lightweight, high-performance personal portfolio engineered with semantic HTML5, modern CSS3, and vanilla JavaScript. Designed with a strict monochrome palette (black, grey, and pure white), cosmic glassmorphism, dynamic multi-layer 2D canvas starfield, and subtle scroll parallax.
+A lightweight, high-performance personal portfolio engineered with semantic HTML5, modern CSS3, and vanilla JavaScript. Designed with a strict monochrome glassmorphic theme, 60 FPS 2D canvas starfield background engine, scroll parallax, and zero external dependencies.
+
+🔗 **Live Deployment**: [https://srujangandla.vercel.app](https://srujangandla.vercel.app)
 
 ---
 
 ## 🌌 Highlights
 
-- **Zero Dependencies**: Pure web standards with zero frameworks or runtime libraries — total bundle weight is under **105 KB**.
-- **Monochrome Cosmic Theme**: Black `#050506` to `#0B0B0D` gradient, glassmorphic cards with white glow borders, and an SVG film-grain texture.
-- **Dynamic 2D Canvas Starfield**: Multi-depth drifting white dots with sine-wave twinkling, shooting stars, device-pixel-ratio scaling, and auto-pause on inactive tabs.
-- **Micro-Parallax & Depth**: Smooth `requestAnimationFrame`-throttled scroll parallax for nebula blobs and the Milky Way diagonal band (disabled on touch devices for fluid scrolling).
+- **Zero Dependencies**: Pure web standards with zero frameworks or runtime libraries — ultra-fast load with sub-100 KB total payload.
+- **Monochrome Space Design System**: Near-black palette (`#050506` to `#0B0B0D`), glassmorphic cards with subtle white glow borders, and SVG film-grain overlay.
+- **Optimized 2D Canvas Starfield**: 
+  - 4 depth layers with independent speeds and twinkling dynamics.
+  - Offscreen sprite caching for star dots, layer-4 glow halos, bokeh circles, and shooting star trails.
+  - Interactive mouse parallax and gentle spring-back cursor displacement.
+  - Hardware concurrency scaling and viewport culling via `IntersectionObserver` & `visibilitychange` to maintain a steady 60 FPS with low Interaction to Next Paint (INP).
 - **Accessibility & Contrast**: Strict WCAG AAA compliance (>7:1 contrast on headings, >4.5:1 on muted copy), keyboard navigation focus rings, screen-reader landmarks, and full `prefers-reduced-motion` support.
 
 ---
@@ -22,17 +27,19 @@ A lightweight, high-performance personal portfolio engineered with semantic HTML
 
 | Project | Domain | Stack | Highlights & Validated Results |
 |:---|:---|:---|:---|
-| **[Network Service Availability Prediction](https://github.com/srujangandla/network-service-availability-prediction)** | Telecom Telemetry ML | Python, scikit-learn, Pandas, NumPy, Matplotlib | Retrospective anomaly classification across 32,000 multi-dimensional RAN KPI time series. Achieved **F1 = 0.9577**, **Precision = 1.0000**, and **FAR = 0.0000**. |
-| **[Disease Outbreak Prediction](https://github.com/srujangandla/disease-outbreak-prediction)** | Epidemiological ML | R, Python, Poisson / Negative Binomial, Random Forest | Multimodal outbreak forecasting analyzing climatic, environmental (LAI, precipitation), and spatial-temporal features. |
+| **[Real-Time Human Activity Recognition & Anomaly Detection](https://github.com/srujangandla/human_activity_recognition)** | Deep Learning & Wearables | Python, TensorFlow, Keras, scikit-learn, Streamlit | Decoupled 1D-CNN + Conv-Autoencoder with score fusion for 12-class activity recognition (PAMAP2) and fall anomaly detection (SisFall). Achieved **91.09% accuracy** & **91.23% weighted F1** on PAMAP2 (1.72 ms/window) and **91.10% accuracy** with **0.8723 ROC-AUC** on SisFall. [[Live Demo](https://srujangandla-human-activity-recognition-appdashboard-svhvin.streamlit.app)] |
+| **[Network Service Availability Prediction](https://github.com/srujangandla/network-service-availability-prediction)** | Telecom Telemetry ML | Python, scikit-learn, Pandas, NumPy, Matplotlib, Seaborn | Retrospective anomaly classification across 32,000 multi-dimensional RAN KPI trace windows using class-weighted Random Forest and SHAP explainability. Achieved **F1 = 0.9577** and **Recall = 0.9189**. |
+| **[Disease Outbreak Prediction & Surge Analysis](https://github.com/srujangandla/Disease-Outbreak-Prediction-and-Surge-Analysis)** | Epidemiological ML | R, Random Forest, Logistic Regression, K-Means, Caret, ggplot2 | Temporal leakage-free forecasting across 8,970 district outbreak reports using climatic and telemetry data. Achieved **RMSE = 0.95** (R² 0.18 vs 0.00 baseline) and surge **PR-AUC 0.44** vs 0.22 baseline. |
+| **[BunkRide](https://github.com/srujangandla/bunkride)** | Full-Stack & WebSockets | React, Node.js, Express, MongoDB, Socket.IO, JWT | Full-stack ride booking platform featuring JWT authentication, distinct Rider and Driver roles, Socket.IO live tracking, and Google Maps routing. |
 
 ---
 
 ## 📂 Repository Structure
 
 ```text
-├── index.html          # Semantic HTML5 page structure with ARIA landmarks
+├── index.html          # Semantic HTML5 page structure with ARIA landmarks & SEO meta
 ├── styles.css          # Monochromatic design system tokens & responsive layouts
-├── script.js           # Starfield canvas engine, scroll parallax, and interactive UI
+├── script.js           # 60 FPS Starfield canvas engine, scroll parallax, and interactive UI
 ├── assets/             # Project screenshots & visual assets
 │   ├── dashcrate-preview.png
 │   ├── network-features.png
@@ -49,8 +56,8 @@ Because this project relies strictly on native web technologies, no build tools 
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/srujangandla/portfolio.git
-cd portfolio
+git clone https://github.com/srujangandla/Portfolio.git
+cd Portfolio
 ```
 
 ### 2. Run locally
@@ -69,9 +76,11 @@ npx serve .
 
 ---
 
-## 🚀 Deployment (GitHub Pages)
+## 🚀 Deployment
 
-Yet to deploy
+The portfolio is deployed and hosted on **Vercel** with automatic Git deployments:
+
+🔗 **Production URL**: [https://srujangandla.vercel.app](https://srujangandla.vercel.app)
 
 ---
 
@@ -82,4 +91,4 @@ Yet to deploy
 - **Degree**: B.E. in Artificial Intelligence & Data Science
 - **GitHub**: [@srujangandla](https://github.com/srujangandla)
 - **LinkedIn**: [linkedin.com/in/srujangandla2504](https://www.linkedin.com/in/srujangandla2504/)
-- **Email**: [srujangandla2504@gmail.com](mailto:srujangandla2504@gmail.com)
+- **Live Portfolio**: [srujangandla.vercel.app](https://srujangandla.vercel.app)
